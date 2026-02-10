@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.21"
 }
 
 android {
@@ -42,6 +43,19 @@ android {
 }
 
 dependencies {
+
+
+    //Funcionalidad principal del cliente
+    implementation(libs.ktor.client.core)
+    //Funcionalidad para (des)serializacion envio y solicitudes JSON
+    implementation(libs.ktor.client.content.negotiation)
+    //Funcionalidad para (des)serialziacion de JSON como tal
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.0")
+    //Motor de Android
+    implementation("io.ktor:ktor-client-android:2.3.0")
+    //Registro
+    implementation("io.ktor:ktor-client-logging:2.3.0")
+
     implementation (libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
 
