@@ -27,6 +27,9 @@ import com.example.api_bbdd_app.model.Plataforma
             ),
     ]
 )
+/*
+* RELACIÓN N:M
+*/
 data class JuegoEnPlataforma(
     @PrimaryKey(false) val juego_id: Long,
     @PrimaryKey(false) val plataforma_id: Long,
