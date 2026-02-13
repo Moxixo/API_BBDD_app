@@ -9,8 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.api_bbdd_app.ui.screens.HomeScreen
+import com.example.api_bbdd_app.ui.screens.HomeViewModel
 import com.example.api_bbdd_app.ui.theme.Api_bbdd_appTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,28 +24,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             Api_bbdd_appTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+
+                    val viewModel: HomeViewModel = viewModel()
+                    val juegos by viewModel.juegos // Usa 'by' para que sea reactivo
+                    HomeScreen(juegos = juegos)
+
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Api_bbdd_appTheme {
-        Greeting("Android")
     }
 }
