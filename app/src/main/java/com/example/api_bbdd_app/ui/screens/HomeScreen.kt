@@ -14,19 +14,24 @@ import androidx.compose.ui.unit.dp
 import com.example.api_bbdd_app.model.Juego
 
 @Composable
-fun HomeScreen(juegos : List<Juego>){
+fun HomeScreen(juegos : List<Juego>, juego : Juego?){
 
     LazyColumn(modifier = Modifier.padding(50.dp)) {
 
         items(juegos){ juego ->
 
-            Row(modifier = Modifier.background(Color.Red).height(40.dp).padding(15.dp)) {
+            Row(modifier = Modifier.background(Color.Red).height(65.dp).padding(15.dp)) {
 
                 Text(juego.nombre)
             }
 
         }
 
+    }
+
+    Row(modifier = Modifier.background(Color.Red).height(65.dp).padding(15.dp)) {
+
+        Text(juego?.nombre ?: "no encontrao :(")
     }
 
 }

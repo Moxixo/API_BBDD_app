@@ -27,7 +27,8 @@ class MainActivity : ComponentActivity() {
 
                     val viewModel: HomeViewModel = viewModel()
                     val juegos by viewModel.juegos // Usa 'by' para que sea reactivo
-                    HomeScreen(juegos = juegos)
+                    val juego by viewModel.juego
+                    HomeScreen(juegos = juegos, juego = juego)
 
                 }
             }

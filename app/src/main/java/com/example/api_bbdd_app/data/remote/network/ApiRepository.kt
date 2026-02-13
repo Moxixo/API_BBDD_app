@@ -40,4 +40,22 @@ class ApiRepository {
 
     }
 
+    suspend fun findJuego(id : Int) : Juego? {
+
+        return try {
+            val respuesta = cliente.get("${ruta}/${id}")
+
+            if(respuesta.status.isSuccess()){
+                return respuesta.body()
+            }
+            else {
+                return null
+            }
+        }
+        catch (e : Exception){
+            println(e.message)
+            return null
+        }
+    }
+
 }

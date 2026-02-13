@@ -12,16 +12,27 @@ class HomeViewModel : ViewModel() {
 
     // Estado de la UI: Una lista vacía al empezar
     var juegos = mutableStateOf<List<Juego>>(emptyList())
+    var juego = mutableStateOf<Juego?>(null)
 
     //Carga los juegos en la API nada mas iniciar la app (?)
     init {
         cargarJuegos()
+        cargarJuego()
     }
 
     private fun cargarJuegos() {
         viewModelScope.launch {
             val resultado = repositorio.getJuegos()
             juegos.value = resultado
+        }
+    }
+
+    private fun cargarJuego(){
+        viewModelScope.launch {
+            val resultado = repositorio.findJuego(3);
+            if (resultado != null) {
+                juego.value = resultado
+            }
         }
     }
 }

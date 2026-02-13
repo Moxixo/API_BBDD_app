@@ -23,9 +23,6 @@ object ApiService {
                 isLenient = true
             })
         }
-        install(HttpTimeout) {
-            requestTimeoutMillis = 5000 // Si en 5 segundos no responde, dará error
-        }
 
     }
 }
