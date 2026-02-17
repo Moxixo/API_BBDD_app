@@ -17,11 +17,7 @@ class HomeViewModel : ViewModel() {
     //Carga los juegos en la API nada mas iniciar la app (?)
     init {
         cargarJuegos()
-        cargarJuego()
 
-        viewModelScope.launch {
-            repositorio.deleteJuego(3)
-        }
     }
 
     private fun cargarJuegos() {

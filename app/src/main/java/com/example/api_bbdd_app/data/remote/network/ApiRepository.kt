@@ -63,9 +63,7 @@ class ApiRepository {
 
     suspend fun updateJuego(id:Int, juego: Juego): Juego {
 
-        return cliente.put("${ruta}/$id") {
-            setBody(juego)
-        }.body()
+        return cliente.put("${ruta}/$id") { setBody(juego) }.body()
 
     }
 

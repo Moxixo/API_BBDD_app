@@ -23,11 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.api_bbdd_app.model.Juego
 import com.example.api_bbdd_app.ui.viewmodel.HomeViewModel
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel, juego : Juego?){
+fun HomeScreen(viewModel: HomeViewModel){
 
     val juegos = viewModel.juegos
 
@@ -68,14 +67,6 @@ fun HomeScreen(viewModel: HomeViewModel, juego : Juego?){
 
                 }
             }
-        }
-
-        Row(modifier = Modifier
-            .background(Color.Red)
-            .height(65.dp)
-            .padding(15.dp)) {
-
-            Text(juego?.nombre ?: "no encontrao :(")
         }
 
         Box(modifier = Modifier.fillMaxSize()) {
