@@ -18,6 +18,10 @@ class HomeViewModel : ViewModel() {
     init {
         cargarJuegos()
         cargarJuego()
+
+        viewModelScope.launch {
+            repositorio.deleteJuego(3)
+        }
     }
 
     private fun cargarJuegos() {

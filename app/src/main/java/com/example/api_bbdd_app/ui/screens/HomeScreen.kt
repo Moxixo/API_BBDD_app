@@ -16,6 +16,9 @@ import com.example.api_bbdd_app.model.Juego
 @Composable
 fun HomeScreen(juegos : List<Juego>, juego : Juego?){
 
+
+
+    
     LazyColumn(modifier = Modifier.padding(50.dp)) {
 
         items(juegos){ juego ->

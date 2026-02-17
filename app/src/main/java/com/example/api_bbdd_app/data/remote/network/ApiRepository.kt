@@ -4,7 +4,10 @@ import android.util.Log
 import com.example.api_bbdd_app.data.remote.ApiService
 import com.example.api_bbdd_app.model.Juego
 import io.ktor.client.call.body
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
 import io.ktor.http.isSuccess
 
 class ApiRepository {
@@ -58,4 +61,15 @@ class ApiRepository {
         }
     }
 
+    suspend fun updateJuego(id:Int, juego: Juego): Juego {
+
+        return cliente.put("${ruta}/$id") {
+            setBody(juego)
+        }.body()
+
+    }
+
+    suspend fun deleteJuego(id:Int) {
+        cliente.delete("${ruta}/$id")
+    }
 }
