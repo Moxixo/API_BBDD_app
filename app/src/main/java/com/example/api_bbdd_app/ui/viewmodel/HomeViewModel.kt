@@ -1,4 +1,4 @@
-package com.example.api_bbdd_app.ui.screens
+package com.example.api_bbdd_app.ui.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel

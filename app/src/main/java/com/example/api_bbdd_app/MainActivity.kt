@@ -12,7 +12,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.api_bbdd_app.ui.screens.AddGameScreen
-import com.example.api_bbdd_app.ui.screens.HomeViewModel
+import com.example.api_bbdd_app.ui.screens.HomeScreen
+import com.example.api_bbdd_app.ui.viewmodel.HomeViewModel
 import com.example.api_bbdd_app.ui.theme.Api_bbdd_appTheme
 
 class MainActivity : ComponentActivity() {
@@ -24,12 +25,12 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
                     val viewModel: HomeViewModel = viewModel()
-                    val juegos by viewModel.juegos // Usa 'by' para que sea reactivo
                     val juego by viewModel.juego
 
                     Column(modifier = Modifier.padding(innerPadding)){
 
-                        AddGameScreen()
+
+                        HomeScreen(viewModel,juego)
 
                     }
 

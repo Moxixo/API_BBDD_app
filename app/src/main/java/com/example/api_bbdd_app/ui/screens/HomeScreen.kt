@@ -1,5 +1,4 @@
 package com.example.api_bbdd_app.ui.screens
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,10 +24,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.api_bbdd_app.model.Juego
+import com.example.api_bbdd_app.ui.viewmodel.HomeViewModel
 
 @Composable
-fun HomeScreen(juegos : List<Juego>, juego : Juego?){
+fun HomeScreen(viewModel: HomeViewModel, juego : Juego?){
 
+    val juegos = viewModel.juegos
 
     Column(modifier = Modifier
         .padding(15.dp)
@@ -53,7 +54,7 @@ fun HomeScreen(juegos : List<Juego>, juego : Juego?){
 
         LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
 
-            items(juegos) { juego ->
+            items(juegos.value) { juego ->
 
                 Row(
                     modifier = Modifier
@@ -63,7 +64,7 @@ fun HomeScreen(juegos : List<Juego>, juego : Juego?){
                         .padding(10.dp),
                     verticalAlignment = Alignment.CenterVertically) {
 
-                 Text(juego.nombre)
+                    Text(juego.nombre)
 
                 }
             }
