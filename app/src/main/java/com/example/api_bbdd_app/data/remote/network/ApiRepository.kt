@@ -46,7 +46,7 @@ class ApiRepository {
 
     suspend fun findJuego(id : Int) : Juego? {
 
-        return try {
+        try {
 
             //Haz get de un solo juego
             val respuesta = cliente.get("${ruta}/${id}")

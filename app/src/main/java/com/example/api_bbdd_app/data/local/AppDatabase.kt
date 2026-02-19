@@ -4,12 +4,20 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.api_bbdd_app.data.local.AppDatabase.Companion.getInstance
 import com.example.api_bbdd_app.data.local.dao.JuegoDao
 import com.example.api_bbdd_app.data.local.entities.relations.JuegosPlataformasCrossRef
 import com.example.api_bbdd_app.data.local.entities.DesarrolladorEntity
 import com.example.api_bbdd_app.data.local.entities.DetalleEntity
 import com.example.api_bbdd_app.data.local.entities.JuegoEntity
 import com.example.api_bbdd_app.data.local.entities.PlataformaEntity
+import com.example.api_bbdd_app.model.Desarrollador
+import com.example.api_bbdd_app.model.Detalle
+import com.example.api_bbdd_app.model.Plataforma
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Database(
     entities = [
@@ -48,6 +56,26 @@ abstract class AppDatabase : RoomDatabase() {
     }
 }
 
+private class DatabaseCallback(private val context: Context) : RoomDatabase.Callback() {
+    override fun onCreate(db: SupportSQLiteDatabase) {
+        super.onCreate(db)
+        // Lanzamos una corrutina para insertar los datos en segundo plano
+        CoroutineScope(Dispatchers.IO).launch {
+            val dao = getInstance(context).getJuegoDao()
 
+            // 1. Precargar Desarrolladores (Ejemplo con 2, tú pones los 6)
+            dao.insertDesarrollador(DesarrolladorEntity(1, "Nintendo"))
+            dao.insertDesarrollador(DesarrolladorEntity(2, "FromSoftware"))
+
+            // 2. Precargar Plataformas (Ejemplo con 2, tú pones las 5)
+            dao.insertPlataforma(PlataformaEntity(1, "Nintendo Switch", "Híbrida", 9))
+            dao.insertPlataforma(PlataformaEntity(2, "PS5", "Sobremesa", 9))
+
+            // 3. Precargar Juegos base
+            dao.insertJuego(JuegoEntity(100, 1, "Zelda: TOTK", "Aventura"))
+            dao.insertDetalle(DetalleEntity(100, "Secuela épica", "12 GB RAM", 69.99))
+        }
+    }
+}
 
 
