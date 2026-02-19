@@ -7,9 +7,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,6 +31,7 @@ import com.example.api_bbdd_app.ui.screens.HomeScreen
 import com.example.api_bbdd_app.ui.viewmodel.HomeViewModel
 import com.example.api_bbdd_app.ui.theme.Api_bbdd_appTheme
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import com.example.api_bbdd_app.data.local.AppDatabase
 import com.example.api_bbdd_app.data.local.dao.JuegoDao
 import com.example.api_bbdd_app.data.local.entities.DesarrolladorEntity
@@ -54,6 +52,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        lifecycleScope.launch(Dispatchers.IO) {
+            // Al pedir la writableDatabase, Room dice: "¡Ups! Me están llamando.
+            // Voy a crear el archivo games_db y a ejecutar el Callback ahora mismo"
+            database.openHelper.writableDatabase
+        }
         setContent {
             Api_bbdd_appTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->

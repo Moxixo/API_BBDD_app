@@ -46,7 +46,7 @@ abstract class AppDatabase : RoomDatabase() {
                         context.applicationContext,
                         AppDatabase::class.java,
                         "games_db" // <--- nombre en la web
-                    )
+                    ).addCallback(DatabaseCallback(context))
                         .build()
                         .also {//it = bbdd creada con Room.dbBuilder
                             INSTANCE = it //guardaa en la variable INSTANCE != null
@@ -64,16 +64,16 @@ private class DatabaseCallback(private val context: Context) : RoomDatabase.Call
             val dao = getInstance(context).getJuegoDao()
 
             // 1. Precargar Desarrolladores (Ejemplo con 2, tú pones los 6)
-            dao.insertDesarrollador(DesarrolladorEntity(1, "Nintendo"))
-            dao.insertDesarrollador(DesarrolladorEntity(2, "FromSoftware"))
+            val idNintendo = dao.insertDesarrollador(DesarrolladorEntity(0, "Nintendo"))
+            val idFS = dao.insertDesarrollador(DesarrolladorEntity(0, "FromSoftware"))
 
             // 2. Precargar Plataformas (Ejemplo con 2, tú pones las 5)
-            dao.insertPlataforma(PlataformaEntity(1, "Nintendo Switch", "Híbrida", 9))
-            dao.insertPlataforma(PlataformaEntity(2, "PS5", "Sobremesa", 9))
+            dao.insertPlataforma(PlataformaEntity(0, "Nintendo Switch", "Híbrida", 9))
+            dao.insertPlataforma(PlataformaEntity(0, "PS5", "Sobremesa", 9))
 
             // 3. Precargar Juegos base
-            dao.insertJuego(JuegoEntity(100, 1, "Zelda: TOTK", "Aventura"))
-            dao.insertDetalle(DetalleEntity(100, "Secuela épica", "12 GB RAM", 69.99))
+            val idJuego = dao.insertJuego(JuegoEntity(0, idNintendo, "Zelda: TOTK", "Aventura"))
+            dao.insertDetalle(DetalleEntity(idJuego, "Secuela épica", "12 GB RAM", 69.99))
         }
     }
 }
