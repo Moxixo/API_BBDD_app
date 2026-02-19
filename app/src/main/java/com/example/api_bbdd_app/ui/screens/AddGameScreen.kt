@@ -41,7 +41,7 @@ fun AddGameScreen(){
 
         OutlinedTextField(
             value = "id",
-            onValueChange = {  }, // Actualizamos el estado al escribir
+            onValueChange = {  },
             label = { Text("ID del videojuego") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true
@@ -99,7 +99,7 @@ fun AddGameScreen(){
 
         }
 
-        Text("TEXTO DE CONFIRMACION TODO")
+        Text("TEXTO DE CONFIRMACION TO DO")
 
 
 

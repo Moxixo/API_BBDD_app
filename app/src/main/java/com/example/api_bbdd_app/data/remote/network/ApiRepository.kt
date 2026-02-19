@@ -14,6 +14,7 @@ class ApiRepository {
 
     //Pasamos el cliente definido en ApiService
     private val cliente = ApiService.cliente
+    //Pasamos la ruta de juegos
     private val ruta = ApiRoutes.juegos
 
 
@@ -25,7 +26,7 @@ class ApiRepository {
             //Pedimos la peticion mediante el cliente a la API
             val respuesta = cliente.get(ruta)
 
-            //Si la respuesta ha sido exitossa devuelveme el body de la respuesta
+            //Si la respuesta ha sido exitossa devuelveme el body de la respuesta con ese formato
             if(respuesta.status.isSuccess()){
                 return respuesta.body<List<Juego>>()
             }
@@ -46,16 +47,22 @@ class ApiRepository {
     suspend fun findJuego(id : Int) : Juego? {
 
         return try {
+
+            //Haz get de un solo juego
             val respuesta = cliente.get("${ruta}/${id}")
 
+            //Si la respuesta ha sido exitosa devuelveme el objeto
             if(respuesta.status.isSuccess()){
                 return respuesta.body()
             }
+            //Si no devuelveme nulo
             else {
                 return null
             }
         }
         catch (e : Exception){
+
+            //Si algo falla devuelve nulo
             println(e.message)
             return null
         }
@@ -63,11 +70,15 @@ class ApiRepository {
 
     suspend fun updateJuego(id:Int, juego: Juego): Juego {
 
+        //Haz una peticion PUT a un Juego especifico creando un cuerpo
+        // con los datos de un juego pasado por parametros
         return cliente.put("${ruta}/$id") { setBody(juego) }.body()
 
     }
 
     suspend fun deleteJuego(id:Int) {
+
+        //Haz una peticion de borrado a un juego especifico
         cliente.delete("${ruta}/$id")
     }
 }

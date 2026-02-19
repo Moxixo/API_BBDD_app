@@ -24,13 +24,15 @@ class MainActivity : ComponentActivity() {
             Api_bbdd_appTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
+                    //ViewModel de HomeScreen
                     val viewModel: HomeViewModel = viewModel()
+                    //Variable auxiliar para porbar el findByID
                     val juego by viewModel.juego
 
                     Column(modifier = Modifier.padding(innerPadding)){
 
-
-                        HomeScreen(viewModel,juego)
+                        //Iniciamos como prueba HomeScreen passando el viewmodel (esto deberia hacerse en navegacion )
+                        HomeScreen(viewModel)
 
                     }
 

@@ -28,6 +28,7 @@ import com.example.api_bbdd_app.ui.viewmodel.HomeViewModel
 @Composable
 fun HomeScreen(viewModel: HomeViewModel){
 
+    //Recogemos la lista de juegos del viewmodel
     val juegos = viewModel.juegos
 
     Column(modifier = Modifier
