@@ -5,9 +5,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "desarrolladores")
-data class Desarrollador(
+data class DesarrolladorEntity(
 
-    @PrimaryKey(autoGenerate = true) val desarrollador_id: Long,
+    @PrimaryKey(autoGenerate = true) val desarrollador_id: Long = 0,
 
     @ColumnInfo(name = "nombre_dev") var nombre: String,
 

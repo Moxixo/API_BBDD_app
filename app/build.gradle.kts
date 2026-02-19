@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.21"
+    kotlin("kapt")
 }
 
 android {
@@ -44,7 +45,7 @@ android {
 
 dependencies {
 
-
+    kapt(libs.androidx.room.compiler)
     //Funcionalidad principal del cliente
     implementation(libs.ktor.client.core)
     //Funcionalidad para (des)serializacion envio y solicitudes JSON
@@ -77,6 +78,5 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
+
 }

@@ -9,12 +9,12 @@ import com.example.api_bbdd_app.data.local.entities.PlataformaEntity
 /*
 * RELACIÓN N:M
 */
-data class JuegoEnPlataforma(
-    @Embedded val juegoEntity: JuegoEntity,
+data class PlataformaEnJuego(
+    @Embedded val plataformaEntity: PlataformaEntity,
     @Relation(
-        parentColumn = "juego_id",
-        entityColumn = "plataforma_id",
+        parentColumn = "plataforma_id",
+        entityColumn = "juego_id",
         associateBy = Junction(JuegosPlataformasCrossRef::class)
     )
-    val plataformaEntities : List<PlataformaEntity>
+    val juegoEntities : List<JuegoEntity>
 )

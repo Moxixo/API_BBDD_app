@@ -2,16 +2,16 @@ package com.example.api_bbdd_app.data.local.entities.relations
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.example.api_bbdd_app.data.local.entities.Detalle
-import com.example.api_bbdd_app.data.local.entities.Juego
+import com.example.api_bbdd_app.data.local.entities.DetalleEntity
+import com.example.api_bbdd_app.data.local.entities.JuegoEntity
 
 /*
 * RELACIÓN 1:1
 */
 data class JuegoConDetalle(
-    @Embedded val juego : Juego,
+    @Embedded val juegoEntity : JuegoEntity,
     @Relation(
         parentColumn = "juego_id",
         entityColumn = "juego_id")
-    val detalle : Detalle
+    val detalleEntity : DetalleEntity
 )
