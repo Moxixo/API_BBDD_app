@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun AddGameScreen(){
+fun GameScreen(){
 
     Column(modifier = Modifier
         .padding(15.dp)
