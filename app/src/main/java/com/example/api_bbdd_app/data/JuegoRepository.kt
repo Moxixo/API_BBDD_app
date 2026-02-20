@@ -37,10 +37,17 @@ interface JuegoRepository {
 
     //----UPDATE----
     suspend fun updateJuego(juego: JuegoEntity)
+
+    suspend fun updateJuegoCompleto(
+        juego: JuegoEntity,
+        detalle: DetalleEntity,
+        plataformasIds: List<Long>
+    )
     //----DELETE----
     suspend fun deleteJuego(juego: JuegoEntity)
 
     //----READ----
+    suspend fun getJuegoCompletoById(id: Long): JuegoCompleto
     fun getJuegosCompletos(): Flow<List<JuegoCompleto>>
 
     fun getAllGames(): Flow<List<JuegoEntity>>

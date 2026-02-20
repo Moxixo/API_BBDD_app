@@ -55,10 +55,18 @@ interface JuegoDao {
 
     @Update
     suspend fun updateJuego(juego: JuegoEntity)
+    @Update
+    suspend fun updateDetalle(det: DetalleEntity)
 
     @Delete
     suspend fun deleteJuego(juego: JuegoEntity)
 
+    @Query("DELETE FROM juegosplataformascrossref WHERE juego_id = :juegoId")
+    suspend fun deletePlataformasDeJuego(juegoId: Long)
+
+    @Transaction
+    @Query("SELECT * FROM juegos WHERE juego_id = :id") // Asegúrate de que el nombre de tu clave primaria sea 'id' en JuegoEntity
+    suspend fun getJuegoCompletoById(id: Long): JuegoCompleto
     @Transaction
     @Query("SELECT * FROM juegos")
     fun getJuegosCompletos(): Flow<List<JuegoCompleto>>

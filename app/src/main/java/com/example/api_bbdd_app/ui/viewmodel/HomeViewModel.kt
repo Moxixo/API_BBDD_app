@@ -16,16 +16,15 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.logging.Logger
 
-class HomeViewModel(application: Application) :
-    AndroidViewModel(application) { //Cambiamos view model por androidViewModel para tener acceso al contexto de la aplicación
+class HomeViewModel(application: Application) : AndroidViewModel(application) {
+    //Cambiamos view model por androidViewModel para tener acceso al contexto de la aplicación
     //conectar con el repositorio para mostrar la lista de juegos guardados
     private val database = AppDatabase.getInstance(application)
-
     private val dao = database.getJuegoDao()
-
     val repository = JuegoRepositoryImpl(dao)
 
     //Conectamos con el repositorio que extrae la lista de juegos de la bbdd gracias al dao
+    //lectura de base de datos
     val allJuegos: StateFlow<List<JuegoCompleto>> = repository.getJuegosCompletos()
         .stateIn(
             scope = viewModelScope,
@@ -33,6 +32,7 @@ class HomeViewModel(application: Application) :
             initialValue = emptyList()
         )
 
+    //conexión con repository -> dao -> bbdd -> eliminarJuego
     fun eliminarJuegoBBDD(juegoCompleto: JuegoCompleto){
         viewModelScope.launch {
             println("Juego eliminado.")

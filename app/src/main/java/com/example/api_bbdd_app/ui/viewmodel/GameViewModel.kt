@@ -10,6 +10,7 @@ import com.example.api_bbdd_app.data.local.entities.DesarrolladorEntity
 import com.example.api_bbdd_app.data.local.entities.DetalleEntity
 import com.example.api_bbdd_app.data.local.entities.JuegoEntity
 import com.example.api_bbdd_app.data.local.entities.PlataformaEntity
+import com.example.api_bbdd_app.data.local.entities.relations.JuegoCompleto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -24,14 +25,16 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     private val dao = database.getJuegoDao()
     private val repository = JuegoRepositoryImpl(dao)
 
-    // 2. OBSERVABLES PARA LA UI (Cargan automáticamente devs y plataformas para los selectores)
+    var currentJuegoId: Long? = null
+        private set
+
+    // carga de devs y plataformas para los selectores
     val desarrolladores: StateFlow<List<DesarrolladorEntity>> = repository.getAllDesarrolladores()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
-
     val plataformas: StateFlow<List<PlataformaEntity>> = repository.getAllPlataformas()
         .stateIn(
             scope = viewModelScope,
@@ -39,8 +42,19 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             initialValue = emptyList()
         )
 
-    // FUNCIÓN PARA GUARDAR
-    fun guardarNuevoJuego(
+    //Read juego byId -> lectura de bbdd si id ya existe
+    fun cargarDatosDelJuego(id: Long, onDatosCargados: (JuegoCompleto) -> Unit) {
+        currentJuegoId = id // Guardamos el ID
+        viewModelScope.launch(Dispatchers.IO) {
+            val juegoCompleto = repository.getJuegoCompletoById(id)
+            withContext(Dispatchers.Main) {
+                onDatosCargados(juegoCompleto)
+            }
+        }
+    }
+
+    // FUNCIÓN PARA GUARDAR / ACTUALIZAR  -> Create + Update
+    fun guardarOActualizarNuevoJuego( //si esta guardado el juego, lo actualizamos, sino, lo registramos
         nombre: String,
         genero: String,
         desarrolladorId: Long,
@@ -52,34 +66,48 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     ) {
         // Lanzamos en el hilo de IO porque es base de datos
         viewModelScope.launch(Dispatchers.IO) {
-
-            // insertar el juego y guardar ID
-            val nuevoJuegoId =
-                JuegoEntity(
-                    nombre = nombre,
-                    genero = genero,
-                    desarrollador_id = desarrolladorId
-                )
-
-
-            // usar id guardado para el detalle
-            val nuevoDetalle = DetalleEntity(
-                juego_id = 0,
-                descripcion = descripcion,
-                requisitos = requisitos,
-                precio = precio
-            )
-            // inserción  atómica
             database.withTransaction {
-                repository.insertJuegoCompleto(
-                    nuevoJuegoId,
-                    nuevoDetalle,
-                    plataformasSeleccionadasIds
-                )
+                if (currentJuegoId == null) { //si el id es null -> crea nuevo juego
+                    // MODO CREAR NUEVO
+                    val nuevoJuego = JuegoEntity(
+                        nombre = nombre,
+                        genero = genero,
+                        desarrollador_id = desarrolladorId
+                    )
+                    val nuevoDetalle = DetalleEntity(
+                        juego_id = 0,
+                        descripcion = descripcion,
+                        requisitos = requisitos,
+                        precio = precio
+                    )
+                    repository.insertJuegoCompleto(
+                        nuevoJuego,
+                        nuevoDetalle,
+                        plataformasSeleccionadasIds
+                    )
+                } else { //si recibe un ID, carga todos sus datos
+                    // MODO ACTUALIZAR
+                    val juegoId = currentJuegoId!!
+                    val juegoActualizado = JuegoEntity(
+                        juego_id = juegoId,
+                        nombre = nombre,
+                        genero = genero,
+                        desarrollador_id = desarrolladorId
+                    )
+                    val detalleAActualizar = DetalleEntity(
+                        juego_id = juegoId,
+                        descripcion = descripcion,
+                        requisitos = requisitos,
+                        precio = precio
+                    )
 
+                    repository.updateJuegoCompleto(
+                        juegoActualizado,
+                        detalleAActualizar,
+                        plataformasSeleccionadasIds
+                    )
+                }
             }
-
-            // avisamos a la interfaz
             withContext(Dispatchers.Main) {
                 onSuccess()
             }

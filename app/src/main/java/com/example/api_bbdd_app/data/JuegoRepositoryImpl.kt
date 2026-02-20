@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 class JuegoRepositoryImpl(
     private val room: JuegoDao,
 ) : JuegoRepository {
-    //CREATE
+    //CREATE -> funciona
     override suspend fun insertJuegoCompleto(
         juego: JuegoEntity,
         detalle: DetalleEntity,
@@ -54,12 +54,31 @@ class JuegoRepositoryImpl(
     override suspend fun updateJuego(juego: JuegoEntity) {
         room.updateJuego(juego)
     }
-    //DELETE
+
+    override suspend fun updateJuegoCompleto(
+        juego: JuegoEntity,
+        detalle: DetalleEntity,
+        plataformasIds: List<Long>,
+    ) {
+        room.updateJuego(juego)
+        room.updateDetalle(detalle)
+
+        room.deletePlataformasDeJuego(juego.juego_id)
+        plataformasIds.forEach { platId ->
+            room.insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(juego.juego_id, platId))
+        }
+    }
+
+    //DELETE -> funciona
     override suspend fun deleteJuego(juego: JuegoEntity) {
         room.deleteJuego(juego)
     }
 
-    //READ
+    //READ -> funciona
+    override suspend fun getJuegoCompletoById(id: Long): JuegoCompleto {
+        return room.getJuegoCompletoById(id)
+    }
+
     override fun getJuegosCompletos(): Flow<List<JuegoCompleto>> {
         return room.getJuegosCompletos()
     }

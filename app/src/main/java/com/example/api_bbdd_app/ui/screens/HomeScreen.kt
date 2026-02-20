@@ -45,7 +45,9 @@ import com.example.api_bbdd_app.ui.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = viewModel(), onNavigateToGame : () -> Unit) {
+fun HomeScreen(
+    viewModel: HomeViewModel = viewModel(),
+    onNavigateToGame: (Long?) -> Unit) {
 
     //Recogemos la lista de juegos del viewmodel que recibe del repository
     val juegos by viewModel.allJuegos.collectAsState()
@@ -61,7 +63,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel(), onNavigateToGame : () -> 
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { onNavigateToGame() },
+                onClick = { onNavigateToGame(null) },
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
                 Icon(Icons.Filled.Add, contentDescription = "Agregar nuevo registro")
@@ -97,7 +99,8 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel(), onNavigateToGame : () -> 
                 items(juegos) { juego ->
                     JuegoItem(
                         juego = juego,
-                        onDeleteClick = {viewModel.eliminarJuegoBBDD(juego)}
+                        onDeleteClick = { viewModel.eliminarJuegoBBDD(juego) },
+                        onEditClick = { onNavigateToGame(juego.juego.juego_id)}
                     )
                 }
             }
@@ -109,10 +112,10 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel(), onNavigateToGame : () -> 
 fun JuegoItem(
     juego: JuegoCompleto,
     onDeleteClick: () -> Unit,
+    onEditClick:() -> Unit
 ) {
     //Creamos estado que expande la tarjeta de juego
     var expanded by remember { mutableStateOf(false) }
-
 
     Card(
         modifier = Modifier
@@ -153,6 +156,13 @@ fun JuegoItem(
                     ) {
                         // Cambiamos el texto según el estado de expanded
                         Text(if (expanded) "Ocultar" else "Details")
+                    }
+                    Button(
+                        onClick = { onEditClick()},
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
+                    ) {
+                        Text("Edit")
                     }
 
                     Button(

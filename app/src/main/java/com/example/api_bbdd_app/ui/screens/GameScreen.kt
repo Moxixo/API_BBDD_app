@@ -8,24 +8,27 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Checkbox
-import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,38 +36,71 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.api_bbdd_app.data.local.entities.DesarrolladorEntity
 import com.example.api_bbdd_app.ui.viewmodel.GameViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GameScreen(viewModel: GameViewModel,
-               onNavigateBack: () -> Unit // Función para volver a la lista cuando se guarde
+fun GameScreen(
+    juegoId: Long?,
+    viewModel: GameViewModel,
+    onNavigateBack: () -> Unit, // Función para volver a la lista cuando se guarde
 ) {
-    // 1. Observamos los datos que vienen de la Base de Datos
+    // estados de datos que vienen de la Base de Datos
     val desarrolladores: List<DesarrolladorEntity> by viewModel.desarrolladores.collectAsStateWithLifecycle()
     val plataformas by viewModel.plataformas.collectAsStateWithLifecycle()
 
-    // 2. Estados para guardar lo que el usuario escribe en los campos de texto
+    // estados para guardar lo que el usuario escribe en los campos de texto
     var nombre by remember { mutableStateOf("") }
     var genero by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
     var requisitos by remember { mutableStateOf("") }
     var precio by remember { mutableStateOf("") }
 
-    // 3. Estados para los selectores (Desplegable y Checkboxes)
+    // estados para los selectores (Desplegable y Checkboxes)
     var expandedDev by remember { mutableStateOf(false) }
     var selectedDev by remember { mutableStateOf<DesarrolladorEntity?>(null) }
 
-    // sin duplicados
+    // sin duplicados (setOf)
     var selectedPlataformas by remember { mutableStateOf(setOf<Long>()) }
+
+    //Definimos LaunchedEffect para definir una corrutina
+    // que ejecuta el código que tiene en segundo plano una sola vez al entrar en
+    //la pantalla, evitando que se redibuje -> solo se redibuja cuando juegoId cambia
+    LaunchedEffect(juegoId) {
+        if (juegoId != null) { //si el id de los parametros, no es null
+            // Llamamos a la función que creamos en el ViewModel de cargar datos de juego
+            viewModel.cargarDatosDelJuego(juegoId) { juegoCompleto ->
+                // Actualizamos los estados definidos arriba,
+                //y se autorellenan los textFields
+                nombre = juegoCompleto.juego.nombre
+                genero = juegoCompleto.juego.genero
+                descripcion = juegoCompleto.detalle.descripcion
+                requisitos = juegoCompleto.detalle.requisitos
+                precio = juegoCompleto.detalle.precio.toString()
+
+                // Para los selectores:
+                selectedDev = desarrolladores.find { dev ->
+                    dev.desarrollador_id == juegoCompleto.juego.desarrollador_id
+                }
+                selectedPlataformas = juegoCompleto.plataformas.map { it.plataforma_id }.toSet()
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Añadir Nuevo Juego") },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) { // Llama a la misma función de volver que el botón de guardar
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Cancelar y volver atrás"
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -81,7 +117,7 @@ fun GameScreen(viewModel: GameViewModel,
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // --- CAMPOS DEL JUEGO BÁSICO ---
+            // --- CAMPOS DEL JUEGO ENTITY---
             OutlinedTextField(
                 value = nombre,
                 onValueChange = { nombre = it },
@@ -109,7 +145,9 @@ fun GameScreen(viewModel: GameViewModel,
                     onValueChange = {},
                     readOnly = true,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedDev) },
-                    modifier = Modifier.menuAnchor().fillMaxWidth()
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth()
                 )
                 ExposedDropdownMenu(
                     expanded = expandedDev,
@@ -127,7 +165,7 @@ fun GameScreen(viewModel: GameViewModel,
                 }
             }
 
-            // --- CAMPOS DEL DETALLE ---
+            // --- CAMPOS DEL DETALLE ENTITY ---
             OutlinedTextField(
                 value = descripcion,
                 onValueChange = { descripcion = it },
@@ -156,7 +194,7 @@ fun GameScreen(viewModel: GameViewModel,
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-            // --- SELECTOR DE PLATAFORMAS (Checkboxes) ---
+            // --- SELECTOR DE PLATAFORMA ENTITY ---
             Text("Selecciona Plataformas:", style = MaterialTheme.typography.titleMedium)
 
             // Pintamos un Checkbox por cada plataforma que exista en la BBDD
@@ -191,7 +229,7 @@ fun GameScreen(viewModel: GameViewModel,
                     // Convertimos el precio de String a Double (si está vacío o mal escrito, ponemos 0.0)
                     val precioDouble = precio.toDoubleOrNull() ?: 0.0
 
-                    viewModel.guardarNuevoJuego(
+                    viewModel.guardarOActualizarNuevoJuego(
                         nombre = nombre,
                         genero = genero,
                         desarrolladorId = selectedDev!!.desarrollador_id, // Es seguro usar !! porque isFormValid lo comprueba
@@ -202,7 +240,9 @@ fun GameScreen(viewModel: GameViewModel,
                         onSuccess = { onNavigateBack() } // Volvemos atrás cuando termine
                     )
                 },
-                modifier = Modifier.fillMaxWidth().height(50.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
                 enabled = isFormValid
             ) {
                 Text("Guardar Juego")
