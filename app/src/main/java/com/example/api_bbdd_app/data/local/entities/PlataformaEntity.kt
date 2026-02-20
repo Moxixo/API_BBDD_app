@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "plataformas")
 data class PlataformaEntity(
 
-    @PrimaryKey(autoGenerate = true) var plataforma_id: Long? =0,
+    @PrimaryKey(autoGenerate = true) var plataforma_id: Long =0,
     @ColumnInfo(name = "nombre_plataforma") var nombre: String,
     @ColumnInfo(name = "tipo") var tipo: String,
     @ColumnInfo(name = "generacion") var generacion: Int,

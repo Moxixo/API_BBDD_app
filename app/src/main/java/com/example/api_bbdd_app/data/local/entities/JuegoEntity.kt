@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.example.api_bbdd_app.model.Juego
 
 @Entity(
     tableName = "juegos",
@@ -18,10 +19,20 @@ import androidx.room.PrimaryKey
     ]
 )
 data class JuegoEntity(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "juego_id") var juego_id: Long? =0,
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "juego_id") var juego_id: Long =0,
 
     @ColumnInfo(name = "desarrollador_id") var desarrollador_id: Long,
 
     @ColumnInfo(name = "nombre_juego") var nombre: String,
     @ColumnInfo(name = "genero") var genero: String,
 )
+
+// Traduce de la Base de Datos a la UI
+fun JuegoEntity.toDomain(): Juego {
+    return Juego(
+        this.juego_id,
+         this.nombre,
+         this.genero,
+        this.desarrollador_id
+    )
+}

@@ -56,6 +56,7 @@ abstract class AppDatabase : RoomDatabase() {
     }
 }
 
+//Funcion de precarga de datos en la bbdd fijos
 private class DatabaseCallback(private val context: Context) : RoomDatabase.Callback() {
     override fun onCreate(db: SupportSQLiteDatabase) {
         super.onCreate(db)
@@ -63,17 +64,27 @@ private class DatabaseCallback(private val context: Context) : RoomDatabase.Call
         CoroutineScope(Dispatchers.IO).launch {
             val dao = getInstance(context).getJuegoDao()
 
-            // 1. Precargar Desarrolladores (Ejemplo con 2, tú pones los 6)
-            val idNintendo = dao.insertDesarrollador(DesarrolladorEntity(0, "Nintendo"))
-            val idFS = dao.insertDesarrollador(DesarrolladorEntity(0, "FromSoftware"))
+            //Desarrolladores fijos
+            val idNintendo = dao.insertDesarrollador(DesarrolladorEntity(nombre = "Nintendo"))
+            val idAtlus = dao.insertDesarrollador(DesarrolladorEntity(nombre = "Atlus"))
+            val idCapcom = dao.insertDesarrollador(DesarrolladorEntity(nombre = "Capcom"))
+            val idTeamCherry = dao.insertDesarrollador(DesarrolladorEntity(nombre = "TeamCherry"))
+            val idBethesda = dao.insertDesarrollador(DesarrolladorEntity(nombre = "Bethesda"))
+            ///Añadimos plataformas fijas
+            val idPc = dao.insertPlataforma(PlataformaEntity(nombre = "PC", tipo = "Sobremesa", generacion = 0))
+            val idPlayStation = dao.insertPlataforma(PlataformaEntity(nombre = "PlayStation5", tipo = "Sobremesa", generacion = 9))
+            val idXbox = dao.insertPlataforma(PlataformaEntity(nombre = "Xbox360", tipo = "Sobremesa", generacion = 9))
+            val idSwitch = dao.insertPlataforma(PlataformaEntity(nombre = "Switch", tipo = "Híbrida", generacion = 8))
+            //Juegos base en la bbdd
+            val idJuego = dao.insertJuego(JuegoEntity(nombre = "Hollow Knight", genero = "Metroidvania", desarrollador_id = idTeamCherry))
+            val idJ = dao.insertJuego(JuegoEntity(nombre= "Persona 3 reload", genero = "JRPG, Aventura", desarrollador_id = idAtlus))
+            //Tabla de referencia relacion N-M
+            dao.insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(idJuego, idPc))
+            dao.insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(idJuego, idSwitch))
 
-            // 2. Precargar Plataformas (Ejemplo con 2, tú pones las 5)
-            dao.insertPlataforma(PlataformaEntity(0, "Nintendo Switch", "Híbrida", 9))
-            dao.insertPlataforma(PlataformaEntity(0, "PS5", "Sobremesa", 9))
+            dao.insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(idJ,idSwitch))
+            dao.insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(idJ,idPlayStation))
 
-            // 3. Precargar Juegos base
-            val idJuego = dao.insertJuego(JuegoEntity(0, idNintendo, "Zelda: TOTK", "Aventura"))
-            dao.insertDetalle(DetalleEntity(idJuego, "Secuela épica", "12 GB RAM", 69.99))
         }
     }
 }

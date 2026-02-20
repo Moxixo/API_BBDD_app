@@ -1,51 +1,42 @@
 package com.example.api_bbdd_app.ui.viewmodel
 
-import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.api_bbdd_app.data.remote.network.ApiRepository
+import com.example.api_bbdd_app.data.JuegoRepositoryImpl
+import com.example.api_bbdd_app.data.local.AppDatabase
+import com.example.api_bbdd_app.data.local.entities.JuegoEntity
 import com.example.api_bbdd_app.model.Juego
+import com.example.api_bbdd_app.model.toEntity
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class HomeViewModel : ViewModel() {
-    //Creamos el repositorio para utilizar los metodos de la API
-    private val repositorio = ApiRepository()
+class HomeViewModel(application: Application) :
+    AndroidViewModel(application) { //Cambiamos view model por androidViewModel para tener acceso al contexto de la aplicación
+    //conectar con el repositorio para mostrar la lista de juegos guardados
+    private val database = AppDatabase.getInstance(application)
 
-    // Estado inicial: una lista vacía al empezar
-    var juegos = mutableStateOf<List<Juego>>(emptyList())
+    private val dao = database.getJuegoDao()
 
-    //Estado inicial: un objeto nulo
-    var juego = mutableStateOf<Juego?>(null)
+    val repository = JuegoRepositoryImpl(dao)
 
-    //Carga los juegos en la API nada mas iniciar la app (?)
-    init {
-        cargarJuegos()
-    }
+    //Conectamos con el repositorio que extrae la lista de juegos de la bbdd gracias al dao
+    val allJuegos: StateFlow<List<JuegoEntity>> = repository.getAllGames()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList<JuegoEntity>()
+        )
 
-    private fun cargarJuegos() {
 
-        //Inicia una corrutina para cargar juegos
+    fun insertJuego(id: Long, nombre: String, genero: String, devId: Long) {
         viewModelScope.launch {
-
-            //Cargame los juegos de la API
-            val resultado = repositorio.getJuegos()
-            //Settea la respuesta al valor de nuestra lista mutable
-            juegos.value = resultado
+            val juego = Juego(id, nombre, genero, devId)
+            val idG = repository.insertJuego(juego.toEntity())
         }
     }
 
-    private fun cargarJuego(){
 
-        //Inicia una corrutina para cargar un juego
-        viewModelScope.launch {
-
-            //Cargame este juego con id 3 de la API
-            val resultado = repositorio.findJuego(3);
-
-            //Si el resultado es diferente de null cargamelo en mi variable mutable
-            if (resultado != null) {
-                juego.value = resultado
-            }
-        }
-    }
 }

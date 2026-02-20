@@ -19,7 +19,7 @@ import androidx.room.PrimaryKey
 )
 data class DetalleEntity(
 
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "juego_id") var juego_id: Long?,
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "juego_id") var juego_id: Long,
 
     @ColumnInfo(name = "descripcion") var descripcion: String,
     @ColumnInfo(name = "requisitos") var requisitos: String,
