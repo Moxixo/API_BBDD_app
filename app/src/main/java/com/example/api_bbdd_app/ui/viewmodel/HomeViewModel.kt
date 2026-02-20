@@ -1,6 +1,7 @@
 package com.example.api_bbdd_app.ui.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.api_bbdd_app.data.JuegoRepositoryImpl
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.util.logging.Logger
 
 class HomeViewModel(application: Application) :
     AndroidViewModel(application) { //Cambiamos view model por androidViewModel para tener acceso al contexto de la aplicación
@@ -31,11 +33,10 @@ class HomeViewModel(application: Application) :
             initialValue = emptyList()
         )
 
-
-    fun insertJuego(id: Long, nombre: String, genero: String, devId: Long) {
+    fun eliminarJuegoBBDD(juegoCompleto: JuegoCompleto){
         viewModelScope.launch {
-            val juego = Juego(id, nombre, genero, devId)
-            val idG = repository.insertJuego(juego.toEntity())
+            println("Juego eliminado.")
+            repository.deleteJuego(juegoCompleto.juego)
         }
     }
 

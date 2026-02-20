@@ -21,7 +21,22 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface JuegoDao {
+    @Transaction
+    suspend fun insertJuegoCompleto(
+        juego: JuegoEntity,
+        detalle: DetalleEntity,
+        plataformasIds: List<Long>
+    ) {
+        val juegoId = insertJuego(juego) //llama al metodo deabajo insertJuego -> se manda al repositry
 
+        val detalleConId = detalle.copy(juego_id = juegoId)
+        insertDetalle(detalleConId)
+
+        //tabla intermedia plataforma-juego
+        plataformasIds.forEach { platId ->
+            insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(juegoId, platId))
+        }
+    }
     //Suspend fun para usar Corrutinas
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertJuego(juegoEntity: JuegoEntity): Long
@@ -37,23 +52,6 @@ interface JuegoDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGamePlataformaCrossRef(crossRef: JuegosPlataformasCrossRef)
-
-    @Transaction
-    suspend fun registrarJuegoCompleto(
-        juego: JuegoEntity,
-        detalle: DetalleEntity,
-        plataformasIds: List<Long>
-    ) {
-        val juegoId = insertJuego(juego)
-
-        val detalleConId = detalle.copy(juego_id = juegoId)
-        insertDetalle(detalleConId)
-
-        //tabla intermedia plataforma-juego
-        plataformasIds.forEach { platId ->
-            insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(juegoId, platId))
-        }
-    }
 
     @Update
     suspend fun updateJuego(juego: JuegoEntity)
@@ -73,21 +71,5 @@ interface JuegoDao {
 
     @Query("SELECT * FROM plataformas")
     fun getAllPlataformas(): Flow<List<PlataformaEntity>>
-
-    @Transaction
-    @Query("SELECT * FROM juegos WHERE nombre_juego = :nombreJuego")
-    fun getJuegoConDetalle(nombreJuego: String): Flow<List<JuegoConDetalle>>
-
-    @Transaction
-    @Query("SELECT * FROM desarrolladores WHERE nombre_dev = :devName")
-    fun getJuegosConDevs(devName: String): Flow<List<DesarrolladorConJuegos>>
-
-    @Transaction
-    @Query("SELECT * FROM plataformas WHERE plataforma_id = :plataforma_id")
-    suspend fun getJuegosDePlataforma(plataforma_id: Long): List<PlataformaEnJuego>
-
-    @Transaction
-    @Query("SELECT * FROM juegos WHERE nombre_juego = :juego_nombre")
-    suspend fun getPlataformasDeJuego(juego_nombre: String): List<JuegoEnPlataforma>
 
 }

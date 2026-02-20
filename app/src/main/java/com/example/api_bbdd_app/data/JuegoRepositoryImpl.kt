@@ -1,20 +1,35 @@
 package com.example.api_bbdd_app.data
 
-import com.example.api_bbdd_app.data.local.AppDatabase
 import com.example.api_bbdd_app.data.local.dao.JuegoDao
 import com.example.api_bbdd_app.data.local.entities.DesarrolladorEntity
 import com.example.api_bbdd_app.data.local.entities.DetalleEntity
 import com.example.api_bbdd_app.data.local.entities.JuegoEntity
 import com.example.api_bbdd_app.data.local.entities.PlataformaEntity
 import com.example.api_bbdd_app.data.local.entities.relations.JuegoCompleto
-import com.example.api_bbdd_app.data.local.entities.relations.JuegoEnPlataforma
 import com.example.api_bbdd_app.data.local.entities.relations.JuegosPlataformasCrossRef
-import com.example.api_bbdd_app.data.local.entities.relations.PlataformaEnJuego
 import kotlinx.coroutines.flow.Flow
 
 class JuegoRepositoryImpl(
-    private val room : JuegoDao
+    private val room: JuegoDao,
 ) : JuegoRepository {
+    //CREATE
+    override suspend fun insertJuegoCompleto(
+        juego: JuegoEntity,
+        detalle: DetalleEntity,
+        plataformasIds: List<Long>,
+    ) {
+        val juegoId =
+            room.insertJuego(juego) //llama al metodo deabajo insertJuego -> se manda al repositry
+
+        val detalleConId = detalle.copy(juego_id = juegoId)
+        room.insertDetalle(detalleConId)
+
+        //tabla intermedia plataforma-juego
+        plataformasIds.forEach { platId ->
+            room.insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(juegoId, platId))
+        }
+    }
+
     override suspend fun insertJuego(juego: JuegoEntity): Long {
         return room.insertJuego(juego)
     }
@@ -32,39 +47,33 @@ class JuegoRepositoryImpl(
     }
 
     override suspend fun insertGamePlataformaCrossRef(crossRef: JuegosPlataformasCrossRef) {
-       room.insertGamePlataformaCrossRef(crossRef)
+        room.insertGamePlataformaCrossRef(crossRef)
     }
 
+    //UPDATE
     override suspend fun updateJuego(juego: JuegoEntity) {
         room.updateJuego(juego)
     }
-
+    //DELETE
     override suspend fun deleteJuego(juego: JuegoEntity) {
-       room.deleteJuego(juego)
+        room.deleteJuego(juego)
     }
 
-    override fun getJuegosCompletos(): Flow<List<JuegoCompleto>>{
+    //READ
+    override fun getJuegosCompletos(): Flow<List<JuegoCompleto>> {
         return room.getJuegosCompletos()
     }
 
     override fun getAllGames(): Flow<List<JuegoEntity>> {
-       return room.getAllGames()
+        return room.getAllGames()
     }
 
     override fun getAllDesarrolladores(): Flow<List<DesarrolladorEntity>> {
-       return room.getAllDesarrolladores()
+        return room.getAllDesarrolladores()
     }
 
     override fun getAllPlataformas(): Flow<List<PlataformaEntity>> {
         return room.getAllPlataformas()
-    }
-
-    override suspend fun getJuegosDePlataforma(plataformaId: Long): List<PlataformaEnJuego> {
-       return room.getJuegosDePlataforma(plataformaId)
-    }
-
-    override suspend fun getPlataformasDeJuego(juegoNombre: String): List<JuegoEnPlataforma> {
-        return room.getPlataformasDeJuego(juegoNombre)
     }
 
 }

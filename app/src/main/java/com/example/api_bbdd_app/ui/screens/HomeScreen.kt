@@ -45,7 +45,7 @@ import com.example.api_bbdd_app.ui.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
+fun HomeScreen(viewModel: HomeViewModel = viewModel(), onNavigateToGame : () -> Unit) {
 
     //Recogemos la lista de juegos del viewmodel que recibe del repository
     val juegos by viewModel.allJuegos.collectAsState()
@@ -61,7 +61,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* onNavigateToAddGame() */ },
+                onClick = { onNavigateToGame() },
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
                 Icon(Icons.Filled.Add, contentDescription = "Agregar nuevo registro")
@@ -97,7 +97,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                 items(juegos) { juego ->
                     JuegoItem(
                         juego = juego,
-                        onDeleteClick = {}
+                        onDeleteClick = {viewModel.eliminarJuegoBBDD(juego)}
                     )
                 }
             }
@@ -156,7 +156,7 @@ fun JuegoItem(
                     }
 
                     Button(
-                        onClick = onDeleteClick,
+                        onClick = { onDeleteClick() },
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
                         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
                     ) {

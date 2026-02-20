@@ -45,6 +45,8 @@ android {
 
 dependencies {
 
+    implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.androidx.navigation.compose)
     kapt(libs.androidx.room.compiler)
     //Funcionalidad principal del cliente
     implementation(libs.ktor.client.core)
