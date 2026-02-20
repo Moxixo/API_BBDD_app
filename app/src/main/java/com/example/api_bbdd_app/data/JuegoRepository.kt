@@ -5,6 +5,7 @@ import com.example.api_bbdd_app.data.local.entities.DesarrolladorEntity
 import com.example.api_bbdd_app.data.local.entities.DetalleEntity
 import com.example.api_bbdd_app.data.local.entities.JuegoEntity
 import com.example.api_bbdd_app.data.local.entities.PlataformaEntity
+import com.example.api_bbdd_app.data.local.entities.relations.JuegoCompleto
 import com.example.api_bbdd_app.data.local.entities.relations.JuegoEnPlataforma
 import com.example.api_bbdd_app.data.local.entities.relations.JuegosPlataformasCrossRef
 import com.example.api_bbdd_app.data.local.entities.relations.PlataformaEnJuego
@@ -31,6 +32,8 @@ interface JuegoRepository {
     suspend fun updateJuego(juego: JuegoEntity)
 
     suspend fun deleteJuego(juego: JuegoEntity)
+
+    fun getJuegosCompletos(): Flow<List<JuegoCompleto>>
 
     fun getAllGames(): Flow<List<JuegoEntity>>
 

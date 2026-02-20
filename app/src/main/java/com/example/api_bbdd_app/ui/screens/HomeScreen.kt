@@ -1,5 +1,7 @@
 package com.example.api_bbdd_app.ui.screens
 
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,14 +13,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Divider
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.OutlinedTextField
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -36,7 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.api_bbdd_app.data.local.entities.JuegoEntity
+import com.example.api_bbdd_app.data.local.entities.relations.JuegoCompleto
 import com.example.api_bbdd_app.ui.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -93,7 +97,6 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                 items(juegos) { juego ->
                     JuegoItem(
                         juego = juego,
-                        onDetailsClick = {},
                         onDeleteClick = {}
                     )
                 }
@@ -101,45 +104,111 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
         }
     }
 }
+
 @Composable
 fun JuegoItem(
-    juego: JuegoEntity,
-    onDetailsClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    juego: JuegoCompleto,
+    onDeleteClick: () -> Unit,
 ) {
-        Row(
+    //Creamos estado que expande la tarjeta de juego
+    var expanded by remember { mutableStateOf(false) }
+
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp)
+            .animateContentSize(), // Esto hace que al abrirse lo haga con una animación suave
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        // Usamos una Column principal para apilar la fila superior y los detalles
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(16.dp)
         ) {
-            // Nombre del juego a la izquierda
-            Text(
-                text = juego.nombre,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.weight(1f) // Ocupa el espacio disponible empujando los botones
-            )
 
-            // Botones a la derecha
+            // --- FILA SUPERIOR (Nombre y Botones) ---
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                OutlinedButton(
-                    onClick = onDetailsClick,
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
-                ) {
-                    Text("Details")
-                }
+                // Nombre del juego
+                Text(
+                    text = juego.juego.nombre,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
 
-                Button(
-                    onClick = onDeleteClick,
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
+                // Botones a la derecha
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text("Delete")
+                    OutlinedButton(
+                        // 2. Al pulsar, invertimos el estado (si era true pasa a false, etc.)
+                        onClick = { expanded = !expanded },
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
+                    ) {
+                        // Cambiamos el texto según el estado de expanded
+                        Text(if (expanded) "Ocultar" else "Details")
+                    }
+
+                    Button(
+                        onClick = onDeleteClick,
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
+                    ) {
+                        Text("Delete")
+                    }
+                }
+            }
+            if (expanded) {
+                // --- Sección Desplegable (Detalles, Dev, Plataformas) ---
+                // Esta sección solo se renderiza si 'expanded' es true
+                if (expanded) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Divider(color = MaterialTheme.colorScheme.outlineVariant) // Una línea separadora sutil
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        // Género
+                        DatoDetalle(titulo = "Género", valor = juego.juego.genero)
+
+                        // Desarrollador (usando el nombre real gracias a la relación)
+                        DatoDetalle(
+                            titulo = "Desarrollador",
+                            valor = juego.desarrollador.nombre ?: "Desconocido"
+                        )
+
+                        // Plataformas (Lista)
+                        if (juego.plataformas.isNotEmpty()) {
+                            // Mapeamos la lista de objetos Plataforma a una sola cadena de texto separada por comas
+                            val nombresPlataformas =
+                                juego.plataformas.joinToString(", ") { it.nombre }
+                            DatoDetalle(titulo = "Plataformas", valor = nombresPlataformas)
+                        }
+                    }
                 }
             }
         }
     }
+}
+
+@Composable
+fun DatoDetalle(titulo: String, valor: String) {
+    Row {
+        Text(
+            text = "$titulo: ",
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            text = valor,
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
+}
+

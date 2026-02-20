@@ -12,6 +12,7 @@ import com.example.api_bbdd_app.data.local.entities.DetalleEntity
 import com.example.api_bbdd_app.data.local.entities.JuegoEntity
 import com.example.api_bbdd_app.data.local.entities.PlataformaEntity
 import com.example.api_bbdd_app.data.local.entities.relations.DesarrolladorConJuegos
+import com.example.api_bbdd_app.data.local.entities.relations.JuegoCompleto
 import com.example.api_bbdd_app.data.local.entities.relations.JuegoConDetalle
 import com.example.api_bbdd_app.data.local.entities.relations.JuegoEnPlataforma
 import com.example.api_bbdd_app.data.local.entities.relations.JuegosPlataformasCrossRef
@@ -37,11 +38,32 @@ interface JuegoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGamePlataformaCrossRef(crossRef: JuegosPlataformasCrossRef)
 
+    @Transaction
+    suspend fun registrarJuegoCompleto(
+        juego: JuegoEntity,
+        detalle: DetalleEntity,
+        plataformasIds: List<Long>
+    ) {
+        val juegoId = insertJuego(juego)
+
+        val detalleConId = detalle.copy(juego_id = juegoId)
+        insertDetalle(detalleConId)
+
+        //tabla intermedia plataforma-juego
+        plataformasIds.forEach { platId ->
+            insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(juegoId, platId))
+        }
+    }
+
     @Update
     suspend fun updateJuego(juego: JuegoEntity)
 
     @Delete
     suspend fun deleteJuego(juego: JuegoEntity)
+
+    @Transaction
+    @Query("SELECT * FROM juegos")
+    fun getJuegosCompletos(): Flow<List<JuegoCompleto>>
 
     @Query("SELECT * FROM juegos")
     fun getAllGames(): Flow<List<JuegoEntity>> //actualizaciones reactivas

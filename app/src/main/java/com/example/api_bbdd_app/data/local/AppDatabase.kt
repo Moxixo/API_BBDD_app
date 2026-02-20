@@ -4,17 +4,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.withTransaction
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.api_bbdd_app.data.local.AppDatabase.Companion.getInstance
 import com.example.api_bbdd_app.data.local.dao.JuegoDao
-import com.example.api_bbdd_app.data.local.entities.relations.JuegosPlataformasCrossRef
 import com.example.api_bbdd_app.data.local.entities.DesarrolladorEntity
 import com.example.api_bbdd_app.data.local.entities.DetalleEntity
 import com.example.api_bbdd_app.data.local.entities.JuegoEntity
 import com.example.api_bbdd_app.data.local.entities.PlataformaEntity
-import com.example.api_bbdd_app.model.Desarrollador
-import com.example.api_bbdd_app.model.Detalle
-import com.example.api_bbdd_app.model.Plataforma
+import com.example.api_bbdd_app.data.local.entities.relations.JuegosPlataformasCrossRef
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -64,27 +62,68 @@ private class DatabaseCallback(private val context: Context) : RoomDatabase.Call
         CoroutineScope(Dispatchers.IO).launch {
             val dao = getInstance(context).getJuegoDao()
 
-            //Desarrolladores fijos
-            val idNintendo = dao.insertDesarrollador(DesarrolladorEntity(nombre = "Nintendo"))
-            val idAtlus = dao.insertDesarrollador(DesarrolladorEntity(nombre = "Atlus"))
-            val idCapcom = dao.insertDesarrollador(DesarrolladorEntity(nombre = "Capcom"))
-            val idTeamCherry = dao.insertDesarrollador(DesarrolladorEntity(nombre = "TeamCherry"))
-            val idBethesda = dao.insertDesarrollador(DesarrolladorEntity(nombre = "Bethesda"))
-            ///Añadimos plataformas fijas
-            val idPc = dao.insertPlataforma(PlataformaEntity(nombre = "PC", tipo = "Sobremesa", generacion = 0))
-            val idPlayStation = dao.insertPlataforma(PlataformaEntity(nombre = "PlayStation5", tipo = "Sobremesa", generacion = 9))
-            val idXbox = dao.insertPlataforma(PlataformaEntity(nombre = "Xbox360", tipo = "Sobremesa", generacion = 9))
-            val idSwitch = dao.insertPlataforma(PlataformaEntity(nombre = "Switch", tipo = "Híbrida", generacion = 8))
-            //Juegos base en la bbdd
-            val idJuego = dao.insertJuego(JuegoEntity(nombre = "Hollow Knight", genero = "Metroidvania", desarrollador_id = idTeamCherry))
-            val idJ = dao.insertJuego(JuegoEntity(nombre= "Persona 3 reload", genero = "JRPG, Aventura", desarrollador_id = idAtlus))
-            //Tabla de referencia relacion N-M
-            dao.insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(idJuego, idPc))
-            dao.insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(idJuego, idSwitch))
+            getInstance(context).withTransaction{
+                //Desarrolladores fijos
+                val idNintendo = dao.insertDesarrollador(DesarrolladorEntity(nombre = "Nintendo"))
+                val idAtlus = dao.insertDesarrollador(DesarrolladorEntity(nombre = "Atlus"))
+                val idCapcom = dao.insertDesarrollador(DesarrolladorEntity(nombre = "Capcom"))
+                val idTeamCherry =
+                    dao.insertDesarrollador(DesarrolladorEntity(nombre = "TeamCherry"))
+                val idBethesda = dao.insertDesarrollador(DesarrolladorEntity(nombre = "Bethesda"))
+                ///Añadimos plataformas fijas
+                val idPc = dao.insertPlataforma(
+                    PlataformaEntity(
+                        nombre = "PC",
+                        tipo = "Sobremesa",
+                        generacion = 0
+                    )
+                )
+                val idPlayStation = dao.insertPlataforma(
+                    PlataformaEntity(
+                        nombre = "PlayStation5",
+                        tipo = "Sobremesa",
+                        generacion = 9
+                    )
+                )
+                val idXbox = dao.insertPlataforma(
+                    PlataformaEntity(
+                        nombre = "Xbox360",
+                        tipo = "Sobremesa",
+                        generacion = 9
+                    )
+                )
+                val idSwitch = dao.insertPlataforma(
+                    PlataformaEntity(
+                        nombre = "Switch",
+                        tipo = "Híbrida",
+                        generacion = 8
+                    )
+                )
+                //Juegos base en la bbdd
+                val idJuego = dao.insertJuego(
+                    JuegoEntity(
+                        nombre = "Hollow Knight",
+                        genero = "Metroidvania",
+                        desarrollador_id = idTeamCherry
+                    )
+                )
+                val idJ = dao.insertJuego(
+                    JuegoEntity(
+                        nombre = "Persona 3 reload",
+                        genero = "JRPG, Aventura",
+                        desarrollador_id = idAtlus
+                    )
+                )
+                //Tabla de referencia relacion N-M
+                dao.insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(idJuego, idPc))
+                dao.insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(idJuego, idSwitch))
 
-            dao.insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(idJ,idSwitch))
-            dao.insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(idJ,idPlayStation))
+                dao.insertDetalle(DetalleEntity(idJuego, "Inexplicable", "12GB", 10.99))
+                dao.insertDetalle(DetalleEntity(idJ, "Sosprendente", "AMD", 40.99))
 
+                dao.insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(idJ, idSwitch))
+                dao.insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(idJ, idPlayStation))
+            }
         }
     }
 }

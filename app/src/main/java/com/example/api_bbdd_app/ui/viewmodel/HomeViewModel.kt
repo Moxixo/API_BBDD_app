@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.api_bbdd_app.data.JuegoRepositoryImpl
 import com.example.api_bbdd_app.data.local.AppDatabase
 import com.example.api_bbdd_app.data.local.entities.JuegoEntity
+import com.example.api_bbdd_app.data.local.entities.relations.JuegoCompleto
 import com.example.api_bbdd_app.model.Juego
 import com.example.api_bbdd_app.model.toEntity
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,11 +24,11 @@ class HomeViewModel(application: Application) :
     val repository = JuegoRepositoryImpl(dao)
 
     //Conectamos con el repositorio que extrae la lista de juegos de la bbdd gracias al dao
-    val allJuegos: StateFlow<List<JuegoEntity>> = repository.getAllGames()
+    val allJuegos: StateFlow<List<JuegoCompleto>> = repository.getJuegosCompletos()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList<JuegoEntity>()
+            initialValue = emptyList()
         )
 
 

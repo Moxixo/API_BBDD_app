@@ -6,6 +6,7 @@ import com.example.api_bbdd_app.data.local.entities.DesarrolladorEntity
 import com.example.api_bbdd_app.data.local.entities.DetalleEntity
 import com.example.api_bbdd_app.data.local.entities.JuegoEntity
 import com.example.api_bbdd_app.data.local.entities.PlataformaEntity
+import com.example.api_bbdd_app.data.local.entities.relations.JuegoCompleto
 import com.example.api_bbdd_app.data.local.entities.relations.JuegoEnPlataforma
 import com.example.api_bbdd_app.data.local.entities.relations.JuegosPlataformasCrossRef
 import com.example.api_bbdd_app.data.local.entities.relations.PlataformaEnJuego
@@ -40,6 +41,10 @@ class JuegoRepositoryImpl(
 
     override suspend fun deleteJuego(juego: JuegoEntity) {
        room.deleteJuego(juego)
+    }
+
+    override fun getJuegosCompletos(): Flow<List<JuegoCompleto>>{
+        return room.getJuegosCompletos()
     }
 
     override fun getAllGames(): Flow<List<JuegoEntity>> {
