@@ -38,8 +38,6 @@ interface JuegoRepository {
     //----UPDATE----
     suspend fun updateJuego(juego: JuegoEntity)
 
-    suspend fun updateDetalle(det: DetalleEntity)
-
     suspend fun updateJuegoCompleto(
         juego: JuegoEntity,
         detalle: DetalleEntity,

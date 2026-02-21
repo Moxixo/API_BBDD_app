@@ -54,9 +54,6 @@ interface JuegoDao {
     @Update
     suspend fun updateJuego(juego: JuegoEntity)
 
-    @Update
-    suspend fun updateDetalle(det: DetalleEntity)
-
     @Delete
     suspend fun deleteJuego(juego: JuegoEntity)
 

@@ -58,9 +58,6 @@ class JuegoRepositoryImpl(
         room.updateJuego(juego)
     }
 
-    override suspend fun updateDetalle(det: DetalleEntity){
-        room.updateDetalle(det)
-    }
 
     override suspend fun updateJuegoCompleto(
         juego: JuegoEntity,
@@ -68,7 +65,7 @@ class JuegoRepositoryImpl(
         plataformasIds: List<Long>,
     ) {
         room.updateJuego(juego)
-        room.updateDetalle(detalle)
+        room.insertDetalle(detalle)
 
         room.deletePlataformasDeJuego(juego.juego_id)
         plataformasIds.forEach { platId ->
