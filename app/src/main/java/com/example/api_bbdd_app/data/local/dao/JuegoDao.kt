@@ -36,7 +36,7 @@ interface JuegoDao {
     }
 
     //Suspend fun para usar Corrutinas
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertJuego(juegoEntity: JuegoEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

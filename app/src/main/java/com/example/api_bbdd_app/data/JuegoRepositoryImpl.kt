@@ -7,10 +7,7 @@ import com.example.api_bbdd_app.data.local.entities.JuegoEntity
 import com.example.api_bbdd_app.data.local.entities.PlataformaEntity
 import com.example.api_bbdd_app.data.local.entities.JuegoCompleto
 import com.example.api_bbdd_app.data.local.entities.JuegosPlataformasCrossRef
-import com.example.api_bbdd_app.data.local.entities.relations.JuegoCompleto
-import com.example.api_bbdd_app.data.local.entities.relations.JuegosPlataformasCrossRef
 import com.example.api_bbdd_app.data.remote.network.ApiRepository
-import com.example.api_bbdd_app.model.Juego
 import com.example.api_bbdd_app.model.toEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -59,6 +56,10 @@ class JuegoRepositoryImpl(
     //UPDATE
     override suspend fun updateJuego(juego: JuegoEntity) {
         room.updateJuego(juego)
+    }
+
+    override suspend fun updateDetalle(det: DetalleEntity){
+        room.updateDetalle(det)
     }
 
     override suspend fun updateJuegoCompleto(
