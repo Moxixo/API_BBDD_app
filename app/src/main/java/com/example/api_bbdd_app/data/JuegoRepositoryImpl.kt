@@ -8,6 +8,7 @@ import com.example.api_bbdd_app.data.local.entities.PlataformaEntity
 import com.example.api_bbdd_app.data.local.entities.JuegoCompleto
 import com.example.api_bbdd_app.data.local.entities.JuegosPlataformasCrossRef
 import com.example.api_bbdd_app.data.remote.network.ApiRepository
+import com.example.api_bbdd_app.model.Juego
 import com.example.api_bbdd_app.model.toEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -37,6 +38,14 @@ class JuegoRepositoryImpl(
         api.getJuegos().forEach { insertJuego(it.toEntity()) }
 
     }
+
+    suspend fun postJuego(juego : Juego){
+
+        api.addJuego(juego)
+
+
+    }
+
 
     override suspend fun insertJuego(juego: JuegoEntity): Long {
         return room.insertJuego(juego)

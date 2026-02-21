@@ -4,6 +4,8 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
@@ -17,12 +19,20 @@ object ApiService {
 
             json(Json {
 
+                //Formatea el Json para que se vea bonito
+                prettyPrint = true
                 //Ignora campos extra no definidos en la data class
                 ignoreUnknownKeys = true
                 //Es mas permisivo con el formato de JSON para evitar errores
                 isLenient = true
             })
         }
+
+        // Para Registro (Logging)
+        install(Logging) {
+            level = LogLevel.ALL
+        }
+
 
     }
 }

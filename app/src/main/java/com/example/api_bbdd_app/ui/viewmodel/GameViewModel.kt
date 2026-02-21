@@ -12,6 +12,7 @@ import com.example.api_bbdd_app.data.local.entities.JuegoCompleto
 import com.example.api_bbdd_app.data.local.entities.JuegoEntity
 import com.example.api_bbdd_app.data.local.entities.PlataformaEntity
 import com.example.api_bbdd_app.data.remote.network.ApiRepository
+import com.example.api_bbdd_app.model.Juego
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +26,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     private val database = AppDatabase.getInstance(application)
     private val dao = database.getJuegoDao()
     private val api = ApiRepository()
-    private val repository = JuegoRepositoryImpl(dao,api)
+    private val repository = JuegoRepositoryImpl(dao, api)
 
 
     // carga de devs y plataformas para los selectores
@@ -53,8 +54,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     // FUNCIÓN PARA GUARDAR / ACTUALIZAR  -> Create + Update
-    fun guardarOActualizarNuevoJuego( //si esta guardado el juego, lo actualizamos, sino, lo registramos
-        idExistenet:Long?,
+    fun guardarOActualizarNuevoJuego(
+        //si esta guardado el juego, lo actualizamos, sino, lo registramos
+        idExistenet: Long?,
         nombre: String,
         genero: String,
         desarrolladorId: Long,
@@ -110,6 +112,27 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             withContext(Dispatchers.Main) {
                 onSuccess()
             }
+        }
+    }
+
+    fun guardarOActualizarJuegoAPI(
+        idExistenet: Long?,
+        nombre: String,
+        genero: String,
+        desarrolladorId: Long,
+        onSuccess: () -> Unit,
+    ) {
+
+        val juego = Juego(idExistenet, nombre, genero, desarrolladorId)
+
+        viewModelScope.launch {
+            repository.postJuego(juego)
+            withContext(Dispatchers.Main) {
+                onSuccess()
+
+            }
+
+
         }
     }
 }

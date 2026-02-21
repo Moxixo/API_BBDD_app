@@ -42,6 +42,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             println("Juego eliminado.")
             repository.deleteJuego(juegoCompleto.juego)
+
         }
     }
 

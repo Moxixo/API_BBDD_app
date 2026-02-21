@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Checkbox
@@ -57,6 +58,9 @@ fun GameScreen(
     var descripcion by remember { mutableStateOf("") }
     var requisitos by remember { mutableStateOf("") }
     var precio by remember { mutableStateOf("") }
+
+    //Campo de texto para el mensaje de operacion exitosa
+    var operacionSuccess by remember { mutableStateOf("") }
 
     // estados para los selectores (Desplegable y Checkboxes)
     var expandedDev by remember { mutableStateOf(false) }
@@ -225,6 +229,10 @@ fun GameScreen(
             // Solo lo habilitamos si ha escrito nombre, género y elegido desarrollador
             val isFormValid = nombre.isNotBlank() && genero.isNotBlank() && selectedDev != null
 
+
+            Text(text = operacionSuccess)
+
+            Row(modifier = Modifier.fillMaxWidth()){
             Button(
                 onClick = {
                     // Convertimos el precio de String a Double (si está vacío o mal escrito, ponemos 0.0)
@@ -239,15 +247,46 @@ fun GameScreen(
                         requisitos = requisitos,
                         precio = precioDouble,
                         plataformasSeleccionadasIds = selectedPlataformas.toList(),
-                        onSuccess = { onNavigateBack() } // Volvemos atrás cuando termine
+                        onSuccess = {
+
+                            operacionSuccess = "Guardado correctamente en BBDD"
+
+                            onNavigateBack() } // Volvemos atrás cuando termine
                     )
                 },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
+                    .height(50.dp)
+                    .width(180.dp),
                 enabled = isFormValid
             ) {
-                Text("Guardar Juego")
+                Text("Guardar Juego BBDD")
+            }
+
+                Spacer(modifier = Modifier.width(5.dp))
+
+            Button(
+                onClick = {
+
+                    viewModel.guardarOActualizarJuegoAPI(
+                        idExistenet = juegoId,
+                        nombre = nombre,
+                        genero = genero,
+                        desarrolladorId = selectedDev!!.desarrollador_id, // Es seguro usar !! porque isFormValid lo comprueba
+                        onSuccess = {
+
+                            operacionSuccess = "Guardado correctamente en API"
+
+                            onNavigateBack() } // Volvemos atrás cuando termine
+                    )
+
+                },
+                modifier = Modifier
+                    .height(50.dp)
+                    .width(180.dp),
+                enabled = isFormValid,
+            ) {
+                Text("Guardar Juego API")
+            }
             }
         }
     }
