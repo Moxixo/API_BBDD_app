@@ -1,9 +1,11 @@
 package com.example.api_bbdd_app.data.local.entities
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.Junction
 import androidx.room.PrimaryKey
-
+import androidx.room.Relation
 @Entity(tableName = "plataformas")
 data class PlataformaEntity(
 
@@ -12,3 +14,4 @@ data class PlataformaEntity(
     @ColumnInfo(name = "tipo") var tipo: String,
     @ColumnInfo(name = "generacion") var generacion: Int,
 )
+

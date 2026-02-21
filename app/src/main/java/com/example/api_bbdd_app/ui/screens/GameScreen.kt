@@ -76,15 +76,16 @@ fun GameScreen(
                 //y se autorellenan los textFields
                 nombre = juegoCompleto.juego.nombre
                 genero = juegoCompleto.juego.genero
-                descripcion = juegoCompleto.detalle.descripcion
-                requisitos = juegoCompleto.detalle.requisitos
-                precio = juegoCompleto.detalle.precio.toString()
+                descripcion = juegoCompleto.detalle?.descripcion ?: "" //necesitamos operador elvis
+                requisitos = juegoCompleto.detalle?.requisitos ?: "" //porque la api no devuelve un JuegoCompleto
+                precio = juegoCompleto.detalle?.precio?.toString() ?: "" //devuelve un Juego, sin detalles ni plataformas
 
                 // Para los selectores:
                 selectedDev = desarrolladores.find { dev ->
                     dev.desarrollador_id == juegoCompleto.juego.desarrollador_id
                 }
-                selectedPlataformas = juegoCompleto.plataformas.map { it.plataforma_id }.toSet()
+                selectedPlataformas =
+                    juegoCompleto.plataformas.map { it.plataforma_id }.toSet()
             }
         }
     }

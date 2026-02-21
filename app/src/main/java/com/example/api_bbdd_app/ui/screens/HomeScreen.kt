@@ -40,7 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.api_bbdd_app.data.local.entities.relations.JuegoCompleto
+import com.example.api_bbdd_app.data.local.entities.JuegoCompleto
 import com.example.api_bbdd_app.ui.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -183,13 +183,14 @@ fun JuegoItem(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        //Precio
+                        DatoDetalle(titulo = "Precio", valor = "${juego.detalle?.precio} €")
                         // Género
                         DatoDetalle(titulo = "Género", valor = juego.juego.genero)
-
                         // Desarrollador (usando el nombre real gracias a la relación)
                         DatoDetalle(
                             titulo = "Desarrollador",
-                            valor = juego.desarrollador.nombre ?: "Desconocido"
+                            valor = juego.desarrollador?.nombre ?: "Desconocido"
                         )
 
                         // Plataformas (Lista)

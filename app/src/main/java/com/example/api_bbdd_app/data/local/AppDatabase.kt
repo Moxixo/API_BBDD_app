@@ -11,8 +11,8 @@ import com.example.api_bbdd_app.data.local.dao.JuegoDao
 import com.example.api_bbdd_app.data.local.entities.DesarrolladorEntity
 import com.example.api_bbdd_app.data.local.entities.DetalleEntity
 import com.example.api_bbdd_app.data.local.entities.JuegoEntity
+import com.example.api_bbdd_app.data.local.entities.JuegosPlataformasCrossRef
 import com.example.api_bbdd_app.data.local.entities.PlataformaEntity
-import com.example.api_bbdd_app.data.local.entities.relations.JuegosPlataformasCrossRef
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -119,7 +119,7 @@ private class DatabaseCallback(private val context: Context) : RoomDatabase.Call
                 dao.insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(idJuego, idSwitch))
 
                 dao.insertDetalle(DetalleEntity(idJuego, "Inexplicable", "12GB", 10.99))
-                dao.insertDetalle(DetalleEntity(idJ, "Sosprendente", "AMD", 40.99))
+                dao.insertDetalle(DetalleEntity(idJ, "Sorprendente", "AMD", 40.99))
 
                 dao.insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(idJ, idSwitch))
                 dao.insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(idJ, idPlayStation))

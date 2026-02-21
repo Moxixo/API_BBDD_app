@@ -1,20 +1,15 @@
 package com.example.api_bbdd_app.ui.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.api_bbdd_app.data.JuegoRepositoryImpl
 import com.example.api_bbdd_app.data.local.AppDatabase
-import com.example.api_bbdd_app.data.local.entities.JuegoEntity
-import com.example.api_bbdd_app.data.local.entities.relations.JuegoCompleto
-import com.example.api_bbdd_app.model.Juego
-import com.example.api_bbdd_app.model.toEntity
+import com.example.api_bbdd_app.data.local.entities.JuegoCompleto
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.logging.Logger
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
     //Cambiamos view model por androidViewModel para tener acceso al contexto de la aplicación

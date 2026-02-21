@@ -5,8 +5,8 @@ import com.example.api_bbdd_app.data.local.entities.DesarrolladorEntity
 import com.example.api_bbdd_app.data.local.entities.DetalleEntity
 import com.example.api_bbdd_app.data.local.entities.JuegoEntity
 import com.example.api_bbdd_app.data.local.entities.PlataformaEntity
-import com.example.api_bbdd_app.data.local.entities.relations.JuegoCompleto
-import com.example.api_bbdd_app.data.local.entities.relations.JuegosPlataformasCrossRef
+import com.example.api_bbdd_app.data.local.entities.JuegoCompleto
+import com.example.api_bbdd_app.data.local.entities.JuegosPlataformasCrossRef
 import kotlinx.coroutines.flow.Flow
 
 class JuegoRepositoryImpl(

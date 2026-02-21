@@ -9,14 +9,10 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.example.api_bbdd_app.data.local.entities.DesarrolladorEntity
 import com.example.api_bbdd_app.data.local.entities.DetalleEntity
+import com.example.api_bbdd_app.data.local.entities.JuegoCompleto
 import com.example.api_bbdd_app.data.local.entities.JuegoEntity
+import com.example.api_bbdd_app.data.local.entities.JuegosPlataformasCrossRef
 import com.example.api_bbdd_app.data.local.entities.PlataformaEntity
-import com.example.api_bbdd_app.data.local.entities.relations.DesarrolladorConJuegos
-import com.example.api_bbdd_app.data.local.entities.relations.JuegoCompleto
-import com.example.api_bbdd_app.data.local.entities.relations.JuegoConDetalle
-import com.example.api_bbdd_app.data.local.entities.relations.JuegoEnPlataforma
-import com.example.api_bbdd_app.data.local.entities.relations.JuegosPlataformasCrossRef
-import com.example.api_bbdd_app.data.local.entities.relations.PlataformaEnJuego
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -25,9 +21,10 @@ interface JuegoDao {
     suspend fun insertJuegoCompleto(
         juego: JuegoEntity,
         detalle: DetalleEntity,
-        plataformasIds: List<Long>
+        plataformasIds: List<Long>,
     ) {
-        val juegoId = insertJuego(juego) //llama al metodo deabajo insertJuego -> se manda al repositry
+        val juegoId =
+            insertJuego(juego) //llama al metodo deabajo insertJuego -> se manda al repositry
 
         val detalleConId = detalle.copy(juego_id = juegoId)
         insertDetalle(detalleConId)
@@ -37,24 +34,26 @@ interface JuegoDao {
             insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(juegoId, platId))
         }
     }
+
     //Suspend fun para usar Corrutinas
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     suspend fun insertJuego(juegoEntity: JuegoEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDetalle(det: DetalleEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDesarrollador(dev: DesarrolladorEntity):Long
+    suspend fun insertDesarrollador(dev: DesarrolladorEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPlataforma(plat: PlataformaEntity):Long
+    suspend fun insertPlataforma(plat: PlataformaEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGamePlataformaCrossRef(crossRef: JuegosPlataformasCrossRef)
 
     @Update
     suspend fun updateJuego(juego: JuegoEntity)
+
     @Update
     suspend fun updateDetalle(det: DetalleEntity)
 
@@ -67,6 +66,7 @@ interface JuegoDao {
     @Transaction
     @Query("SELECT * FROM juegos WHERE juego_id = :id") // Asegúrate de que el nombre de tu clave primaria sea 'id' en JuegoEntity
     suspend fun getJuegoCompletoById(id: Long): JuegoCompleto
+
     @Transaction
     @Query("SELECT * FROM juegos")
     fun getJuegosCompletos(): Flow<List<JuegoCompleto>>

@@ -8,9 +8,9 @@ import com.example.api_bbdd_app.data.JuegoRepositoryImpl
 import com.example.api_bbdd_app.data.local.AppDatabase
 import com.example.api_bbdd_app.data.local.entities.DesarrolladorEntity
 import com.example.api_bbdd_app.data.local.entities.DetalleEntity
+import com.example.api_bbdd_app.data.local.entities.JuegoCompleto
 import com.example.api_bbdd_app.data.local.entities.JuegoEntity
 import com.example.api_bbdd_app.data.local.entities.PlataformaEntity
-import com.example.api_bbdd_app.data.local.entities.relations.JuegoCompleto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -94,7 +94,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                         genero = genero,
                         desarrollador_id = desarrolladorId
                     )
-                    val detalleAActualizar = DetalleEntity(
+                    val detalleActualizado = DetalleEntity(
                         juego_id = juegoId,
                         descripcion = descripcion,
                         requisitos = requisitos,
@@ -103,7 +103,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
                     repository.updateJuegoCompleto(
                         juegoActualizado,
-                        detalleAActualizar,
+                        detalleActualizado,
                         plataformasSeleccionadasIds
                     )
                 }
