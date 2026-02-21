@@ -26,7 +26,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     private val database = AppDatabase.getInstance(application)
     private val dao = database.getJuegoDao()
     private val api = ApiRepository()
-    private val repository = JuegoRepositoryImpl(dao, api)
+    private val repository = JuegoRepositoryImpl(dao,api)
 
 
     // carga de devs y plataformas para los selectores
@@ -54,9 +54,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     // FUNCIÓN PARA GUARDAR / ACTUALIZAR  -> Create + Update
-    fun guardarOActualizarNuevoJuego(
-        //si esta guardado el juego, lo actualizamos, sino, lo registramos
-        idExistenet: Long?,
+    fun guardarOActualizarNuevoJuego( //si esta guardado el juego, lo actualizamos, sino, lo registramos
+        idExistenet:Long?,
         nombre: String,
         genero: String,
         desarrolladorId: Long,
