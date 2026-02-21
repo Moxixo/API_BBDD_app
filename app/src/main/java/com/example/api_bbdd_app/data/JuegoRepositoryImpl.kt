@@ -7,10 +7,14 @@ import com.example.api_bbdd_app.data.local.entities.JuegoEntity
 import com.example.api_bbdd_app.data.local.entities.PlataformaEntity
 import com.example.api_bbdd_app.data.local.entities.relations.JuegoCompleto
 import com.example.api_bbdd_app.data.local.entities.relations.JuegosPlataformasCrossRef
+import com.example.api_bbdd_app.data.remote.network.ApiRepository
+import com.example.api_bbdd_app.model.Juego
+import com.example.api_bbdd_app.model.toEntity
 import kotlinx.coroutines.flow.Flow
 
 class JuegoRepositoryImpl(
     private val room: JuegoDao,
+    private val api: ApiRepository,
 ) : JuegoRepository {
     //CREATE -> funciona
     override suspend fun insertJuegoCompleto(
@@ -93,6 +97,12 @@ class JuegoRepositoryImpl(
 
     override fun getAllPlataformas(): Flow<List<PlataformaEntity>> {
         return room.getAllPlataformas()
+    }
+
+    suspend fun persistirJuegos(){
+
+        api.getJuegos().forEach { insertJuego(it.toEntity()) }
+
     }
 
 }

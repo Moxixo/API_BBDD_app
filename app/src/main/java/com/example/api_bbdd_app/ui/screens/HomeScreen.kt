@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.api_bbdd_app.data.local.entities.JuegoEntity
 import com.example.api_bbdd_app.data.local.entities.relations.JuegoCompleto
 import com.example.api_bbdd_app.ui.viewmodel.HomeViewModel
 
@@ -60,7 +61,15 @@ fun HomeScreen(
             CenterAlignedTopAppBar(
                 title = { Text("Gestión De juegos", fontWeight = FontWeight.Bold) }
             )
-        },
+
+            Button(
+                onClick = {},
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
+            ) {
+                Text("Get Juegos")
+            }
+                 },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { onNavigateToGame(null) },
@@ -100,7 +109,7 @@ fun HomeScreen(
                     JuegoItem(
                         juego = juego,
                         onDeleteClick = { viewModel.eliminarJuegoBBDD(juego) },
-                        onEditClick = { onNavigateToGame(juego.juego.juego_id)}
+                        onEditClick = { onNavigateToGame(juego.juego_id)}
                     )
                 }
             }
@@ -110,7 +119,7 @@ fun HomeScreen(
 
 @Composable
 fun JuegoItem(
-    juego: JuegoCompleto,
+    juego: JuegoEntity,
     onDeleteClick: () -> Unit,
     onEditClick:() -> Unit
 ) {
@@ -139,7 +148,7 @@ fun JuegoItem(
             ) {
                 // Nombre del juego
                 Text(
-                    text = juego.juego.nombre,
+                    text = juego.nombre,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
@@ -184,14 +193,15 @@ fun JuegoItem(
 
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         // Género
-                        DatoDetalle(titulo = "Género", valor = juego.juego.genero)
+                        DatoDetalle(titulo = "Género", valor = juego.genero)
 
                         // Desarrollador (usando el nombre real gracias a la relación)
                         DatoDetalle(
                             titulo = "Desarrollador",
-                            valor = juego.desarrollador.nombre ?: "Desconocido"
+                            valor = juego.nombre ?: "Desconocido"
                         )
 
+                        /*
                         // Plataformas (Lista)
                         if (juego.plataformas.isNotEmpty()) {
                             // Mapeamos la lista de objetos Plataforma a una sola cadena de texto separada por comas
@@ -199,6 +209,8 @@ fun JuegoItem(
                                 juego.plataformas.joinToString(", ") { it.nombre }
                             DatoDetalle(titulo = "Plataformas", valor = nombresPlataformas)
                         }
+                        */
+
                     }
                 }
             }
