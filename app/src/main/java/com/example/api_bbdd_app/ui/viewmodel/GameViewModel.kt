@@ -22,7 +22,7 @@ import kotlinx.coroutines.withContext
 
 class GameViewModel(application: Application) : AndroidViewModel(application) {
 
-    // 1. Instanciamos la BBDD y el DAO
+    // 1. Instanciamos la BBDD, el DAO y la API
     private val database = AppDatabase.getInstance(application)
     private val dao = database.getJuegoDao()
     private val api = ApiRepository()
@@ -114,6 +114,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    //FUNCION PARA GURADAR O ACTUALIZAR DATOS EN API --> Post + Put
     fun guardarOActualizarJuegoAPI(
         idExistenet: Long?,
         nombre: String,
@@ -122,16 +123,16 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         onSuccess: () -> Unit,
     ) {
 
+        //Se crea un objeto Juego con los datos recogidos del formulario
         val juego = Juego(idExistenet, nombre, genero, desarrolladorId)
 
+        //Se inicia una corrutina para realizar la operación en un hilo secundario
         viewModelScope.launch {
             repository.postJuego(juego)
             withContext(Dispatchers.Main) {
                 onSuccess()
 
             }
-
-
         }
     }
 }

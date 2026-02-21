@@ -1,7 +1,6 @@
 package com.example.api_bbdd_app.data.remote.network
 
 import android.util.Log
-import com.example.api_bbdd_app.data.remote.ApiService
 import com.example.api_bbdd_app.model.Juego
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
@@ -22,8 +21,8 @@ class ApiRepository {
     private val ruta = ApiRoutes.juegos
 
 
+    //Funcion que devuelve una lista con los juegos cargados de la API
     suspend fun getJuegos(): List<Juego> {
-
 
         return try {
 
@@ -47,6 +46,7 @@ class ApiRepository {
 
     }
 
+    //Funcion para actualizar un juego
     suspend fun updateJuego(juego: Juego) {
 
         //Haz una peticion PUT a un Juego especifico creando un cuerpo
@@ -55,17 +55,23 @@ class ApiRepository {
 
     }
 
+    //Funcion para agregar un juego
     suspend fun addJuego(juego: Juego) {
 
+        //Realiza una peticion post a la ruta de juegos
         cliente.post(ruta){
 
+            //Definimos el tipo de contenido para representar
             contentType(ContentType.Application.Json)
+            //Definimos el cuerpo de la peticion (el juego vaya)
             setBody(juego)
         }
+
         println("Juego añadido correctamente a la API")
 
     }
 
+    //Funcion para eliminar juego
     suspend fun deleteJuego(juego:Juego) {
 
         //Haz una peticion de borrado a un juego especifico

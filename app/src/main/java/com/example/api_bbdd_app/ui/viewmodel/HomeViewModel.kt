@@ -19,7 +19,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     //conectar con el repositorio para mostrar la lista de juegos guardados
     private val database = AppDatabase.getInstance(application)
     private val dao = database.getJuegoDao()
-
     private val api = ApiRepository()
     val repository = JuegoRepositoryImpl(dao,api)
 
@@ -33,6 +32,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             initialValue = emptyList()
         )
 
+    //Conexion con repository -> api -> get -> juegos -> persist -> bbdd
     fun persistirYMostrarJuegos(){
         viewModelScope.launch { repository.persistirJuegos() }
     }
@@ -45,6 +45,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    //Realiza la solicitud para eliminar el juego de la API
     fun eliminarJuegoApi(juego: Juego){
 
         viewModelScope.launch {
