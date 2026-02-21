@@ -27,8 +27,6 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     private val api = ApiRepository()
     private val repository = JuegoRepositoryImpl(dao,api)
 
-    var currentJuegoId: Long? = null
-        private set
 
     // carga de devs y plataformas para los selectores
     val desarrolladores: StateFlow<List<DesarrolladorEntity>> = repository.getAllDesarrolladores()
@@ -46,7 +44,6 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     //Read juego byId -> lectura de bbdd si id ya existe
     fun cargarDatosDelJuego(id: Long, onDatosCargados: (JuegoCompleto) -> Unit) {
-        currentJuegoId = id // Guardamos el ID
         viewModelScope.launch(Dispatchers.IO) {
             val juegoCompleto = repository.getJuegoCompletoById(id)
             withContext(Dispatchers.Main) {
@@ -57,6 +54,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     // FUNCIÓN PARA GUARDAR / ACTUALIZAR  -> Create + Update
     fun guardarOActualizarNuevoJuego( //si esta guardado el juego, lo actualizamos, sino, lo registramos
+        idExistenet:Long?,
         nombre: String,
         genero: String,
         desarrolladorId: Long,
@@ -69,7 +67,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         // Lanzamos en el hilo de IO porque es base de datos
         viewModelScope.launch(Dispatchers.IO) {
             database.withTransaction {
-                if (currentJuegoId == null) { //si el id es null -> crea nuevo juego
+                if (idExistenet == null) { //si el id es null -> crea nuevo juego
                     // MODO CREAR NUEVO
                     val nuevoJuego = JuegoEntity(
                         nombre = nombre,
@@ -89,15 +87,14 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                     )
                 } else { //si recibe un ID, carga todos sus datos
                     // MODO ACTUALIZAR
-                    val juegoId = currentJuegoId!!
                     val juegoActualizado = JuegoEntity(
-                        juego_id = juegoId,
+                        juego_id = idExistenet,
                         nombre = nombre,
                         genero = genero,
                         desarrollador_id = desarrolladorId
                     )
                     val detalleActualizado = DetalleEntity(
-                        juego_id = juegoId,
+                        juego_id = idExistenet,
                         descripcion = descripcion,
                         requisitos = requisitos,
                         precio = precio

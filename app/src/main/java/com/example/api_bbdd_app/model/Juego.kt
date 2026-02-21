@@ -15,7 +15,7 @@ data class Juego(
 
  fun Juego.toEntity(): JuegoEntity {
     return JuegoEntity(
-        juego_id = this.juego_id,
+        juego_id =0,
         nombre = this.nombre,
         genero = this.genero,
         desarrollador_id = this.desarrollador_id

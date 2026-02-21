@@ -32,6 +32,11 @@ class JuegoRepositoryImpl(
             room.insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(juegoId, platId))
         }
     }
+    suspend fun persistirJuegos(){
+
+        api.getJuegos().forEach { insertJuego(it.toEntity()) }
+
+    }
 
     override suspend fun insertJuego(juego: JuegoEntity): Long {
         return room.insertJuego(juego)
@@ -99,10 +104,6 @@ class JuegoRepositoryImpl(
         return room.getAllPlataformas()
     }
 
-    suspend fun persistirJuegos(){
 
-        api.getJuegos().forEach { insertJuego(it.toEntity()) }
-
-    }
 
 }

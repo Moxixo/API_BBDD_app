@@ -75,13 +75,3 @@ data class JuegoCompleto(
     val detalle: DetalleEntity?
 )
 
-
-// Traduce de la Base de Datos a la UI
-fun JuegoEntity.toDomain(): Juego {
-    return Juego(
-        this.juego_id,
-        this.nombre,
-        this.genero,
-        this.desarrollador_id
-    )
-}

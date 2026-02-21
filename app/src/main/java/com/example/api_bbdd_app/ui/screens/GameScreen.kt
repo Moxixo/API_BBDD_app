@@ -231,6 +231,7 @@ fun GameScreen(
                     val precioDouble = precio.toDoubleOrNull() ?: 0.0
 
                     viewModel.guardarOActualizarNuevoJuego(
+                        idExistenet = juegoId,
                         nombre = nombre,
                         genero = genero,
                         desarrolladorId = selectedDev!!.desarrollador_id, // Es seguro usar !! porque isFormValid lo comprueba
