@@ -40,7 +40,8 @@ abstract class AppDatabase : RoomDatabase() {
         fun getInstance(context: Context): AppDatabase {
             synchronized(this) { //controlar que vaya un hilo detrás de otro
                 return INSTANCE
-                    ?: Room.databaseBuilder( //si la bbdd esta creada -> la devuelve,sino implementa Room
+                    ?: Room.databaseBuilder( //si la bbdd esta creada -> la devuelve
+                                            // sino -> implementa RoomBuilder
                         context.applicationContext,
                         AppDatabase::class.java,
                         "games_db" // <--- nombre en la web

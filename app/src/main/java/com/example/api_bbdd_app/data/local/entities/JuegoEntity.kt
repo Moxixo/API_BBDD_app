@@ -13,10 +13,10 @@ import com.example.api_bbdd_app.model.Juego
 @Entity(
     tableName = "juegos",
     foreignKeys = [
-        ForeignKey(
+        ForeignKey( //establecemos foreign key para la relacion 1-N
             entity = DesarrolladorEntity::class,
             parentColumns = arrayOf("desarrollador_id"), //columna en juegos
-            childColumns = arrayOf("desarrollador_id"), //columna en desvs
+            childColumns = arrayOf("desarrollador_id"), //columna en devs
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.CASCADE
         )
@@ -25,7 +25,7 @@ import com.example.api_bbdd_app.model.Juego
 data class JuegoEntity(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "juego_id") var juego_id: Long = 0,
 
-    @ColumnInfo(name = "desarrollador_id") var desarrollador_id: Long,
+    @ColumnInfo(name = "desarrollador_id") var desarrollador_id: Long, //Variable relacional 1-N
 
     @ColumnInfo(name = "nombre_juego") var nombre: String,
     @ColumnInfo(name = "genero") var genero: String,
@@ -40,9 +40,15 @@ data class JuegoEntity(
             parentColumns = ["juego_id"],
             childColumns = ["juego_id"],
             onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = PlataformaEntity::class,
+            parentColumns = ["plataforma_id"],
+            childColumns = ["plataforma_id"],
+            onDelete = ForeignKey.CASCADE
         )
     ]
-)
+) //tabla referencial
 data class JuegosPlataformasCrossRef(
     val juego_id: Long,
     val plataforma_id: Long,
@@ -51,30 +57,34 @@ data class JuegosPlataformasCrossRef(
 
 
 //CLASE QUE GUARDA juego + desarrollador + detalle + plataformas
+//Evitamos Joins
 data class JuegoCompleto(
-    @Embedded val juego: JuegoEntity,
+    @Embedded val juego: JuegoEntity, //todas las columnas de juegos (tabla base del proyecto)
     //dev
-    @Relation(
-        parentColumn = "desarrollador_id",
-        entityColumn = "desarrollador_id"
+    @Relation( //relacion 1-N
+        parentColumn = "desarrollador_id", //columna de juego
+        entityColumn = "desarrollador_id" //columna de desarrollador
     )
-    val desarrollador: DesarrolladorEntity?,
+    val desarrollador: DesarrolladorEntity?, //conecta el juego con el dev
+    //operador terciario por si descargamos un juego de la api sin dev
 
     // plataformas de tabla intermedia
-    @Relation(
-        parentColumn = "juego_id",
-        entityColumn = "plataforma_id",
-        associateBy = Junction(JuegosPlataformasCrossRef::class)
+    @Relation( //relacion N-M
+        parentColumn = "juego_id", //columna de juego
+        entityColumn = "plataforma_id", //columna de plataforma
+        associateBy = Junction(JuegosPlataformasCrossRef::class) //join by clase intermedia
     )
-    val plataformas: List<PlataformaEntity>,
+    val plataformas: List<PlataformaEntity>, //segun el juego_id, mira el plataforma_id asociado
     //detalles
-    @Relation(
-        parentColumn = "juego_id", // ID JuegoEntity
-        entityColumn = "juego_id"  // ID foránea en DetalleEntity
+    @Relation( //relacion 1-1
+        parentColumn = "juego_id", // columna del juego
+        entityColumn = "juego_id"  // columna del detalle
     )
-    val detalle: DetalleEntity?
+    val detalle: DetalleEntity? //operador terciario porque la descarga de la api no sabemos si trae detalles o no
 )
 
+
+//función de extensión
 fun JuegoEntity.toModel() : Juego{
     return Juego(
         juego_id =0,

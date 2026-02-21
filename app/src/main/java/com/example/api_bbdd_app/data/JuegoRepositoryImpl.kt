@@ -16,7 +16,7 @@ class JuegoRepositoryImpl(
     private val room: JuegoDao,
     private val api: ApiRepository,
 ) : JuegoRepository {
-    //CREATE -> funciona
+    //CREATE
     override suspend fun insertJuegoCompleto(
         juego: JuegoEntity,
         detalle: DetalleEntity,

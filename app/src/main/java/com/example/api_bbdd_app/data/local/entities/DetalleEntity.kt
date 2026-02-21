@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 @Entity(
     tableName = "detalles",
     foreignKeys = [
-        ForeignKey(
+        ForeignKey( //Relacion 1-1, juego id es PK y FK a la vez
             entity = JuegoEntity::class,
             parentColumns = arrayOf("juego_id"),
             childColumns = arrayOf("juego_id"),
@@ -19,7 +19,7 @@ import androidx.room.PrimaryKey
 )
 data class DetalleEntity(
 
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "juego_id") var juego_id: Long,
+    @PrimaryKey @ColumnInfo(name = "juego_id") var juego_id: Long,
 
     @ColumnInfo(name = "descripcion") var descripcion: String,
     @ColumnInfo(name = "requisitos") var requisitos: String,

@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface JuegoDao {
+    //CRUD DATA ACCESS OBJECT(operaciones sql) -> REPOSITORY -> VIEWMODEL
     @Transaction //bloqueamos la bbdd para procesar la operacion
     suspend fun insertJuegoCompleto(
         juego: JuegoEntity,
@@ -37,31 +38,16 @@ interface JuegoDao {
 
     //Suspend fun para usar Corrutinas
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertJuego(juegoEntity: JuegoEntity): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDetalle(det: DetalleEntity)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDesarrollador(dev: DesarrolladorEntity): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPlataforma(plat: PlataformaEntity): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertGamePlataformaCrossRef(crossRef: JuegosPlataformasCrossRef)
+    suspend fun insertJuego(juegoEntity: JuegoEntity): Long //Lo llamaos en insertJuegoCompleto
 
     @Update
-    suspend fun updateJuego(juego: JuegoEntity)
+    suspend fun updateJuego(juego: JuegoEntity) //
 
     @Delete
     suspend fun deleteJuego(juego: JuegoEntity)
 
-    @Query("DELETE FROM juegosplataformascrossref WHERE juego_id = :juegoId")
-    suspend fun deletePlataformasDeJuego(juegoId: Long)
-
     @Transaction
-    @Query("SELECT * FROM juegos WHERE juego_id = :id") // Asegúrate de que el nombre de tu clave primaria sea 'id' en JuegoEntity
+    @Query("SELECT * FROM juegos WHERE juego_id = :id")
     suspend fun getJuegoCompletoById(id: Long): JuegoCompleto
 
     @Transaction
@@ -71,10 +57,36 @@ interface JuegoDao {
     @Query("SELECT * FROM juegos")
     fun getAllGames(): Flow<List<JuegoEntity>> //actualizaciones reactivas
 
+
+
+
+
+
+
+
+
+
+    /**METODOS DAO AUXILIARES**/
+
     @Query("SELECT * FROM desarrolladores")
     fun getAllDesarrolladores(): Flow<List<DesarrolladorEntity>>
 
     @Query("SELECT * FROM plataformas")
     fun getAllPlataformas(): Flow<List<PlataformaEntity>>
+
+    @Query("DELETE FROM juegosplataformascrossref WHERE juego_id = :juegoId")
+    suspend fun deletePlataformasDeJuego(juegoId: Long)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertDetalle(det: DetalleEntity) //tambien sirve para updatear
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertDesarrollador(dev: DesarrolladorEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPlataforma(plat: PlataformaEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertGamePlataformaCrossRef(crossRef: JuegosPlataformasCrossRef)
 
 }

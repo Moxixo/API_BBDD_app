@@ -1,10 +1,8 @@
 package com.example.api_bbdd_app.data.local.entities
 
 import androidx.room.ColumnInfo
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.Relation
 
 @Entity(tableName = "desarrolladores")
 data class DesarrolladorEntity(
