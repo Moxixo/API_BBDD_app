@@ -23,11 +23,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val api = ApiRepository()
     val repository = JuegoRepositoryImpl(dao,api)
 
-    //carga atuomatica al iniciar homeScreen
-    //que descarga los datos de la api
-    init {
-        viewModelScope.launch { repository.persistirJuegos() }
-    }
 
     //Conectamos con el repositorio que extrae la lista de juegos de la bbdd gracias al dao
     //lectura de base de datos
@@ -37,6 +32,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
+
+    fun persistirYMostrarJuegos(){
+        viewModelScope.launch { repository.persistirJuegos() }
+    }
 
     //conexión con repository -> dao -> bbdd -> eliminarJuego
     fun eliminarJuegoBBDD(juegoCompleto: JuegoCompleto){
