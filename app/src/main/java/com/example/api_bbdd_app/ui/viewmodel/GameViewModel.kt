@@ -11,6 +11,8 @@ import com.example.api_bbdd_app.data.local.entities.DetalleEntity
 import com.example.api_bbdd_app.data.local.entities.JuegoCompleto
 import com.example.api_bbdd_app.data.local.entities.JuegoEntity
 import com.example.api_bbdd_app.data.local.entities.PlataformaEntity
+import com.example.api_bbdd_app.data.local.entities.relations.JuegoCompleto
+import com.example.api_bbdd_app.data.remote.network.ApiRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +25,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     // 1. Instanciamos la BBDD y el DAO
     private val database = AppDatabase.getInstance(application)
     private val dao = database.getJuegoDao()
-    private val repository = JuegoRepositoryImpl(dao)
+    private val api = ApiRepository()
+    private val repository = JuegoRepositoryImpl(dao,api)
 
     var currentJuegoId: Long? = null
         private set

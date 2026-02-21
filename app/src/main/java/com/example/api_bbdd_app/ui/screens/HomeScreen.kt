@@ -41,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.api_bbdd_app.data.local.entities.JuegoCompleto
+import com.example.api_bbdd_app.data.local.entities.JuegoEntity
 import com.example.api_bbdd_app.ui.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
