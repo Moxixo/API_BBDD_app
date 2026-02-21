@@ -48,6 +48,7 @@ interface JuegoRepository {
 
     //----READ----
     suspend fun getJuegoCompletoById(id: Long): JuegoCompleto
+
     fun getJuegosCompletos(): Flow<List<JuegoCompleto>>
 
     fun getAllGames(): Flow<List<JuegoEntity>>

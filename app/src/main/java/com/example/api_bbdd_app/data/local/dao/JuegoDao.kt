@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface JuegoDao {
-    @Transaction
+    @Transaction //bloqueamos la bbdd para procesar la operacion
     suspend fun insertJuegoCompleto(
         juego: JuegoEntity,
         detalle: DetalleEntity,

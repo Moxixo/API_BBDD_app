@@ -75,3 +75,11 @@ data class JuegoCompleto(
     val detalle: DetalleEntity?
 )
 
+fun JuegoEntity.toModel() : Juego{
+    return Juego(
+        juego_id =0,
+        nombre = this.nombre,
+        genero = this.genero,
+        desarrollador_id = this.desarrollador_id
+    )
+}
