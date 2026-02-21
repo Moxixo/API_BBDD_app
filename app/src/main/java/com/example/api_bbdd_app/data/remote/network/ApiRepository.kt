@@ -66,10 +66,11 @@ class ApiRepository {
 
     }
 
-    suspend fun deleteJuego(id: Int) {
+    suspend fun deleteJuego(juego:Juego) {
 
         //Haz una peticion de borrado a un juego especifico
-        cliente.delete("${ruta}/$id")
+        cliente.delete("${ruta}/${juego.juego_id}")
+        println("Borrado juego de la API")
     }
 
 }

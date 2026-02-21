@@ -40,10 +40,11 @@ class JuegoRepositoryImpl(
     }
 
     suspend fun postJuego(juego : Juego){
-
         api.addJuego(juego)
+    }
 
-
+    suspend fun deleteJuegoApi(juego: Juego){
+        api.deleteJuego(juego)
     }
 
 

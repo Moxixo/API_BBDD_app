@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.api_bbdd_app.data.local.entities.JuegoCompleto
 import com.example.api_bbdd_app.data.local.entities.JuegoEntity
+import com.example.api_bbdd_app.data.local.entities.toModel
 import com.example.api_bbdd_app.ui.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -100,7 +101,10 @@ fun HomeScreen(
                 items(juegos) { juego ->
                     JuegoItem(
                         juego = juego,
-                        onDeleteClick = { viewModel.eliminarJuegoBBDD(juego) },
+                        onDeleteClick = {
+                            viewModel.eliminarJuegoBBDD(juego)
+                            viewModel.eliminarJuegoApi(juego.juego.toModel())
+                                        },
                         onEditClick = { onNavigateToGame(juego.juego.juego_id)}
                     )
                 }

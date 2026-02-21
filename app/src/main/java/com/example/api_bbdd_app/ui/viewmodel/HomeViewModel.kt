@@ -8,6 +8,7 @@ import com.example.api_bbdd_app.data.JuegoRepositoryImpl
 import com.example.api_bbdd_app.data.local.AppDatabase
 import com.example.api_bbdd_app.data.local.entities.JuegoCompleto
 import com.example.api_bbdd_app.data.remote.network.ApiRepository
+import com.example.api_bbdd_app.model.Juego
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -42,7 +43,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             println("Juego eliminado.")
             repository.deleteJuego(juegoCompleto.juego)
+        }
+    }
 
+    fun eliminarJuegoApi(juego: Juego){
+
+        viewModelScope.launch {
+            repository.deleteJuegoApi(juego)
         }
     }
 
