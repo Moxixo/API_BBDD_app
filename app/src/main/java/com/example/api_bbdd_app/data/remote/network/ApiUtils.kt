@@ -1,14 +1,27 @@
-package com.example.api_bbdd_app.data.remote
+package com.example.api_bbdd_app.data.remote.network
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
-import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
+//Objeto que contiene las rutas de la API
+
+object ApiRoutes {
+    //Ruta raiz de la API creada
+    val raiz : String = "https://my-json-server.typicode.com/Moxixo/pmd-api"
+
+    //Ruta relativa a los datos de juegos
+    val juegos : String = "${raiz}/juegos"
+
+
+}
+
+
+//Objeto que configura el cliente HTTP
 object ApiService {
 
     //Variable que guarda el "Motor" que manipula los datos con configuraciones basicas

@@ -13,6 +13,7 @@ data class Juego(
 
 )
 
+//Metodo para pasar un Juego a un JuegoEntity
  fun Juego.toEntity(): JuegoEntity {
     return JuegoEntity(
         juego_id =0,

@@ -16,6 +16,7 @@ class JuegoRepositoryImpl(
     private val room: JuegoDao,
     private val api: ApiRepository,
 ) : JuegoRepository {
+
     //CREATE -> funciona
     override suspend fun insertJuegoCompleto(
         juego: JuegoEntity,
@@ -33,20 +34,6 @@ class JuegoRepositoryImpl(
             room.insertGamePlataformaCrossRef(JuegosPlataformasCrossRef(juegoId, platId))
         }
     }
-    suspend fun persistirJuegos(){
-
-        api.getJuegos().forEach { insertJuego(it.toEntity()) }
-
-    }
-
-    suspend fun postJuego(juego : Juego){
-        api.addJuego(juego)
-    }
-
-    suspend fun deleteJuegoApi(juego: Juego){
-        api.deleteJuego(juego)
-    }
-
 
     override suspend fun insertJuego(juego: JuegoEntity): Long {
         return room.insertJuego(juego)
@@ -88,7 +75,7 @@ class JuegoRepositoryImpl(
         }
     }
 
-    //DELETE -> funciona
+    //DELETE BBDD -> funciona
     override suspend fun deleteJuego(juego: JuegoEntity) {
         room.deleteJuego(juego)
     }
@@ -112,6 +99,24 @@ class JuegoRepositoryImpl(
 
     override fun getAllPlataformas(): Flow<List<PlataformaEntity>> {
         return room.getAllPlataformas()
+    }
+
+
+    //GET Y PERSISTIR
+    suspend fun persistirJuegos(){
+
+        api.getJuegos().forEach { insertJuego(it.toEntity()) }
+
+    }
+
+    //POST
+    suspend fun postJuego(juego : Juego){
+        api.addJuego(juego)
+    }
+
+    //DELETE API
+    suspend fun deleteJuegoApi(juego: Juego){
+        api.deleteJuego(juego)
     }
 
 

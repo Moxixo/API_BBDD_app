@@ -229,41 +229,44 @@ fun GameScreen(
             // Solo lo habilitamos si ha escrito nombre, género y elegido desarrollador
             val isFormValid = nombre.isNotBlank() && genero.isNotBlank() && selectedDev != null
 
-
+            //Texto que muestra el resultado de la operacion
             Text(text = operacionSuccess)
 
             Row(modifier = Modifier.fillMaxWidth()){
+
+            //Boton para guardar un juego en BBDD
             Button(
-                onClick = {
-                    // Convertimos el precio de String a Double (si está vacío o mal escrito, ponemos 0.0)
-                    val precioDouble = precio.toDoubleOrNull() ?: 0.0
+                    onClick = {
+                        // Convertimos el precio de String a Double (si está vacío o mal escrito, ponemos 0.0)
+                        val precioDouble = precio.toDoubleOrNull() ?: 0.0
 
-                    viewModel.guardarOActualizarNuevoJuego(
-                        idExistenet = juegoId,
-                        nombre = nombre,
-                        genero = genero,
-                        desarrolladorId = selectedDev!!.desarrollador_id, // Es seguro usar !! porque isFormValid lo comprueba
-                        descripcion = descripcion,
-                        requisitos = requisitos,
-                        precio = precioDouble,
-                        plataformasSeleccionadasIds = selectedPlataformas.toList(),
-                        onSuccess = {
+                        viewModel.guardarOActualizarNuevoJuego(
+                            idExistenet = juegoId,
+                            nombre = nombre,
+                            genero = genero,
+                            desarrolladorId = selectedDev!!.desarrollador_id, // Es seguro usar !! porque isFormValid lo comprueba
+                            descripcion = descripcion,
+                            requisitos = requisitos,
+                            precio = precioDouble,
+                            plataformasSeleccionadasIds = selectedPlataformas.toList(),
+                            onSuccess = {
 
-                            operacionSuccess = "Guardado correctamente en BBDD"
+                                operacionSuccess = "Guardado correctamente en BBDD"
 
-                            onNavigateBack() } // Volvemos atrás cuando termine
-                    )
-                },
-                modifier = Modifier
-                    .height(50.dp)
-                    .width(180.dp),
-                enabled = isFormValid
-            ) {
+                                onNavigateBack() } // Volvemos atrás cuando termine
+                        )
+                    },
+                    modifier = Modifier
+                        .height(50.dp)
+                        .width(180.dp),
+                    enabled = isFormValid
+                ) {
                 Text("Guardar Juego BBDD")
-            }
+                }
 
                 Spacer(modifier = Modifier.width(5.dp))
 
+            //Boton para guardar un juego en API
             Button(
                 onClick = {
 
