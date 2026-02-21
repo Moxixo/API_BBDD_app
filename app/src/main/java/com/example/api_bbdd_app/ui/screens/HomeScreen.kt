@@ -56,6 +56,17 @@ fun HomeScreen(
     //variable que usamos para la barra de busqueda
     var searchText by remember { mutableStateOf("") }
 
+    val juegosFiltrados = remember(searchText, juegos) {
+        if (searchText.isBlank()) {
+            juegos // Si el buscador está vacío, mostramos todos los juegos
+        } else {
+            juegos.filter { juegoCompleto ->
+                // Buscamos si el nombre del desarrollador contiene el texto escrito (ignorando mayúsculas)
+                juegoCompleto.desarrollador?.nombre?.contains(searchText, ignoreCase = true) == true
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -69,7 +80,8 @@ fun HomeScreen(
             ) {
                 Icon(Icons.Filled.Add, contentDescription = "Agregar nuevo registro")
             }
-        }
+        },
+
     ) { paddingValues ->
 
         // Columna principal
@@ -83,7 +95,7 @@ fun HomeScreen(
             OutlinedTextField(
                 value = searchText,
                 onValueChange = { searchText = it },
-                placeholder = { Text("Buscar juego...") },
+                placeholder = { Text("Buscar por dev...") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
@@ -97,7 +109,7 @@ fun HomeScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 80.dp) // Espacio para que el FAB no tape el último elemento
             ) {
-                items(juegos) { juego ->
+                items(juegosFiltrados) { juego ->
                     JuegoItem(
                         juego = juego,
                         onDeleteClick = { viewModel.eliminarJuegoBBDD(juego) },
